@@ -134,6 +134,12 @@
     display: none;
   }
 
+  /* 文章卡片整块可点（点击跳转由 mobile-post-card.js 处理） */
+  #recent-posts .recent-post-item {
+    cursor: pointer;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, .06);
+  }
+
   /* 胶囊导航条：一行可左右滑 */
   #aside-content .mnav-capsules {
     margin: 0 0 4px;
