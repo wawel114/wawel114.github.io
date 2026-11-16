@@ -1,0 +1,684 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>本站功能更新日志 | wawel</title><meta name="author" content="wawel"><meta name="copyright" content="wawel"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="这篇文章记录本站从建站以来的功能改动。一方面给自己留个账，另一方面是留给之后接手继续开发的 AI：先看这篇了解「现在有什么、为什么这么设计」，再看本机的 MANUAL.md（日常操作）和 HANDOFF.md（背景、恢复步骤、待办）。最新改动永远放在最上面。  最后更新：2026-11-16　当前版本：v2026.11.16 这篇文章怎么维护1.1 更新步骤（固定四步） 改完站点、确认本地构建通">
+<meta property="og:type" content="website">
+<meta property="og:title" content="本站功能更新日志">
+<meta property="og:url" content="https://wawel114.github.io/changelog/index.html">
+<meta property="og:site_name" content="wawel">
+<meta property="og:description" content="这篇文章记录本站从建站以来的功能改动。一方面给自己留个账，另一方面是留给之后接手继续开发的 AI：先看这篇了解「现在有什么、为什么这么设计」，再看本机的 MANUAL.md（日常操作）和 HANDOFF.md（背景、恢复步骤、待办）。最新改动永远放在最上面。  最后更新：2026-11-16　当前版本：v2026.11.16 这篇文章怎么维护1.1 更新步骤（固定四步） 改完站点、确认本地构建通">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://wawel114.github.io/img/avatar.jpg">
+<meta property="article:published_time" content="2026-11-16T15:05:31.000Z">
+<meta property="article:modified_time" content="2026-11-16T17:07:36.951Z">
+<meta property="article:author" content="wawel">
+<meta property="article:tag" content="更新日志">
+<meta property="article:tag" content="博客">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://wawel114.github.io/img/avatar.jpg"><script type="application/ld+json"></script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://wawel114.github.io/changelog/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        try {
+          const data = { value }
+
+          if (ttl != null) {
+            data.expiry = Date.now() + ttl * 86400000
+          }
+
+          localStorage.setItem(key, JSON.stringify(data))
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', 'undefined')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', 'undefined')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          const mediaQueryDark = window.matchMedia('(prefers-color-scheme: dark)')
+          const mediaQueryLight = window.matchMedia('(prefers-color-scheme: light)')
+
+          if (theme === undefined) {
+            if (mediaQueryLight.matches) activateLightMode()
+            else if (mediaQueryDark.matches) activateDarkMode()
+            else {
+              const hour = new Date().getHours()
+              const start = 6
+              const end = 18
+              const isNight =
+                start < end
+                    ? hour < start || hour >= end
+                    : hour >= start || hour < end
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            mediaQueryDark.addEventListener('change', e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else {
+            theme === 'light' ? activateLightMode() : activateDarkMode()
+          }
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.json","preload":true,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '本站功能更新日志',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'page'
+}</script><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div class="page" id="body-wrap"><header class="not-home-page" id="page-header" style="background-image: url(/img/banner.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">wawel</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div></div></nav><div id="page-site-info"><h1 id="site-title">本站功能更新日志</h1></div></header><main class="layout" id="content-inner"><div id="page"><div class="container" id="article-container"><blockquote>
+<p>这篇文章记录本站从建站以来的功能改动。<br>一方面给自己留个账，另一方面是留给<strong>之后接手继续开发的 AI</strong>：先看这篇了解「现在有什么、为什么这么设计」，再看本机的 <code>MANUAL.md</code>（日常操作）和 <code>HANDOFF.md</code>（背景、恢复步骤、待办）。<br>最新改动永远放在最上面。</p>
+</blockquote>
+<p><strong>最后更新：2026-11-16　当前版本：v2026.11.16</strong></p>
+<h2 id="这篇文章怎么维护"><a href="#这篇文章怎么维护" class="headerlink" title="这篇文章怎么维护"></a>这篇文章怎么维护</h2><h3 id="1-1-更新步骤（固定四步）"><a href="#1-1-更新步骤（固定四步）" class="headerlink" title="1.1 更新步骤（固定四步）"></a>1.1 更新步骤（固定四步）</h3><ol>
+<li>改完站点、确认本地构建通过后，把本文开头的 <code>date</code> 改成当前时间，<code>version</code> 改成当天版本号。</li>
+<li>把正文上方的「最后更新 &#x2F; 当前版本」状态行同步改掉。</li>
+<li>在下面的「更新记录」表格<strong>最上面插入一行</strong>（最新的在最前），四列按格式填。</li>
+<li>如果功能清单有变化（新增&#x2F;删除了某个能力），同步改「当前功能清单」那张表。</li>
+</ol>
+<p>一次改动一行，别把几件事塞进同一行。改坏了要回滚时，这一行就是线索。</p>
+<h3 id="1-2-版本号规则"><a href="#1-2-版本号规则" class="headerlink" title="1.2 版本号规则"></a>1.2 版本号规则</h3><table>
+<thead>
+<tr>
+<th>情况</th>
+<th>写法</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>当天第一次更新</td>
+<td><code>vYYYY.MM.DD</code></td>
+<td><code>v2026.11.16</code></td>
+</tr>
+<tr>
+<td>同一天第二次及以后</td>
+<td>后面加 <code>-2</code>、<code>-3</code></td>
+<td><code>v2026.11.16-2</code></td>
+</tr>
+<tr>
+<td>跨天</td>
+<td>直接用新日期，序号重新从无开始</td>
+<td><code>v2026.11.17</code></td>
+</tr>
+</tbody></table>
+<p>版本号跟着<strong>日期</strong>走，不跟功能大小走。这样不用纠结「这算 1.1 还是 1.2」，也方便和发布记录对上。</p>
+<h3 id="1-3-更新记录表格格式"><a href="#1-3-更新记录表格格式" class="headerlink" title="1.3 更新记录表格格式"></a>1.3 更新记录表格格式</h3><p>固定四列，顺序不能变：</p>
+<table>
+<thead>
+<tr>
+<th>列</th>
+<th>填什么</th>
+<th>注意</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>日期</td>
+<td><code>YYYY-MM-DD</code></td>
+<td>与版本号里的日期一致</td>
+</tr>
+<tr>
+<td>类型</td>
+<td>只能从下面六个词里选一个</td>
+<td>方便以后筛选、统计</td>
+</tr>
+<tr>
+<td>改了什么</td>
+<td>一句话：改了什么 + 用户能感知到的变化</td>
+<td>不要只写「优化代码」这种等于没说的话</td>
+</tr>
+<tr>
+<td>涉及文件</td>
+<td>反引号包住的关键文件路径，多个用 <code>、</code> 隔开</td>
+<td>只写最关键的 1～3 个，不用列全</td>
+</tr>
+</tbody></table>
+<p><strong>类型词表（只允许这六个）</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>用于</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>新增</code></td>
+<td>新功能、新页面、新配置项</td>
+</tr>
+<tr>
+<td><code>修复</code></td>
+<td>修 bug、修错位、修兼容问题</td>
+</tr>
+<tr>
+<td><code>调整</code></td>
+<td>行为&#x2F;样式&#x2F;文案变了，但不算新功能也不算修 bug</td>
+</tr>
+<tr>
+<td><code>删除</code></td>
+<td>删功能、删文件、删示例内容</td>
+</tr>
+<tr>
+<td><code>安全</code></td>
+<td>隐私、加密、权限、凭据相关</td>
+</tr>
+<tr>
+<td><code>文档</code></td>
+<td>只改了说明文档，不影响线上表现</td>
+</tr>
+</tbody></table>
+<h3 id="1-4-可复制模板"><a href="#1-4-可复制模板" class="headerlink" title="1.4 可复制模板"></a>1.4 可复制模板</h3><p>改文章时直接照抄下面这段（把占位内容换掉）：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="strong">**最后更新：YYYY-MM-DD　当前版本：vYYYY.MM.DD**</span></span><br></pre></td></tr></table></figure>
+
+<p>往更新记录表格顶部插入这一行：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">| YYYY-MM-DD | 新增 / 修复 / 调整 / 删除 / 安全 / 文档（选一个） | 改了什么，用户能感知到什么变化 | <span class="code">`路径/文件`</span> |</span><br></pre></td></tr></table></figure>
+
+<p>如果是同一天第二次更新，版本号记得加 <code>-2</code>。</p>
+<h2 id="项目速览"><a href="#项目速览" class="headerlink" title="项目速览"></a>项目速览</h2><h3 id="2-1-技术栈"><a href="#2-1-技术栈" class="headerlink" title="2.1 技术栈"></a>2.1 技术栈</h3><table>
+<thead>
+<tr>
+<th>部分</th>
+<th>用什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>静态站点框架</td>
+<td>Hexo 7</td>
+</tr>
+<tr>
+<td>主题</td>
+<td>Butterfly 5（配置覆盖写在自己的主题配置文件里，不改 <code>node_modules</code>）</td>
+</tr>
+<tr>
+<td>文章格式</td>
+<td>Markdown + 开头 <code>---</code> 信息段</td>
+</tr>
+<tr>
+<td>写作台</td>
+<td>本机 Node 服务 + 单页 HTML，浏览器打开即用</td>
+</tr>
+<tr>
+<td>发布</td>
+<td>提交到云端私有仓库 → GitHub Actions 自动构建 → 发布到公开站点</td>
+</tr>
+<tr>
+<td>加密</td>
+<td><code>hexo-blog-encrypt</code>，仅「随记」板块可用</td>
+</tr>
+</tbody></table>
+<h3 id="2-2-目录里哪些能改、哪些别动"><a href="#2-2-目录里哪些能改、哪些别动" class="headerlink" title="2.2 目录里哪些能改、哪些别动"></a>2.2 目录里哪些能改、哪些别动</h3><table>
+<thead>
+<tr>
+<th>位置</th>
+<th>说明</th>
+<th>能不能改</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>source/_posts/</code></td>
+<td>所有文章</td>
+<td>随便加，<strong>已发布的文件名（网址）不能改</strong></td>
+</tr>
+<tr>
+<td><code>source/css/custom.css</code></td>
+<td>自定义样式（手机端横幅等）</td>
+<td>可以改，主题升级不会覆盖</td>
+</tr>
+<tr>
+<td><code>_config.yml</code></td>
+<td>站点主配置（网址、加密文案、搜索、排除项）</td>
+<td>可以改</td>
+</tr>
+<tr>
+<td><code>_config.butterfly.yml</code></td>
+<td>主题配置（导航、配色、注入样式、评论）</td>
+<td>可以改</td>
+</tr>
+<tr>
+<td><code>scaffolds/</code></td>
+<td>新建文章的模板</td>
+<td>可以改</td>
+</tr>
+<tr>
+<td><code>scripts/search-filter.js</code></td>
+<td>搜索索引隐私过滤</td>
+<td><strong>别动</strong>，动了会把加密文章漏进搜索</td>
+</tr>
+<tr>
+<td>自动构建流程文件</td>
+<td>云端发布用</td>
+<td><strong>别动</strong>，改错会导致发布失败</td>
+</tr>
+<tr>
+<td><code>tools/</code></td>
+<td>写作台源码</td>
+<td>可以改，但不会上传到线上</td>
+</tr>
+<tr>
+<td><code>node_modules/</code>、<code>public/</code></td>
+<td>依赖和构建产物</td>
+<td>不要手改，随时可重建</td>
+</tr>
+</tbody></table>
+<h3 id="2-3-三个板块"><a href="#2-3-三个板块" class="headerlink" title="2.3 三个板块"></a>2.3 三个板块</h3><table>
+<thead>
+<tr>
+<th>板块</th>
+<th>分类</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>我的软件</td>
+<td>我的软件</td>
+<td>自己做的小工具，可填版本号、平台，模板带「下载」「更新日志」小节</td>
+</tr>
+<tr>
+<td>推荐软件</td>
+<td>推荐软件</td>
+<td>推荐别人的软件，一篇静态文章，不追版本</td>
+</tr>
+<tr>
+<td>随记</td>
+<td>随记</td>
+<td>唯一支持密码加密的板块，日常记录</td>
+</tr>
+</tbody></table>
+<p>板块决定分类，也决定顶部导航归到哪个栏目。<strong>只有「随记」能填密码</strong>，软件类文章填密码会被写作台拒绝。</p>
+<h2 id="当前功能清单"><a href="#当前功能清单" class="headerlink" title="当前功能清单"></a>当前功能清单</h2><h3 id="3-1-阅读体验"><a href="#3-1-阅读体验" class="headerlink" title="3.1 阅读体验"></a>3.1 阅读体验</h3><table>
+<thead>
+<tr>
+<th>功能</th>
+<th>状态</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>响应式布局</td>
+<td>有</td>
+<td>桌面、平板、手机三种断点</td>
+</tr>
+<tr>
+<td>手机端顶部横幅</td>
+<td>有</td>
+<td>整图完整显示，不再放大裁切；标题放在下方主题色带里</td>
+</tr>
+<tr>
+<td>深色模式</td>
+<td>有</td>
+<td>跟随系统自动切换，右下角保留手动开关</td>
+</tr>
+<tr>
+<td>图片懒加载</td>
+<td>有</td>
+<td>用浏览器原生能力，不引第三方脚本</td>
+</tr>
+<tr>
+<td>本地搜索</td>
+<td>有</td>
+<td>顶部放大镜，索引为 <code>/search.json</code>，打开即可搜</td>
+</tr>
+<tr>
+<td>文章目录</td>
+<td>有</td>
+<td>长文右侧自动生成</td>
+</tr>
+<tr>
+<td>字号&#x2F;字体</td>
+<td>有</td>
+<td>正文 15px、代码 13px；只用系统字体，不加载网络字体</td>
+</tr>
+<tr>
+<td>禁止搜索引擎收录</td>
+<td>有</td>
+<td><code>robots.txt</code> 全站 <code>Disallow</code></td>
+</tr>
+</tbody></table>
+<h3 id="3-2-写作台（本机）"><a href="#3-2-写作台（本机）" class="headerlink" title="3.2 写作台（本机）"></a>3.2 写作台（本机）</h3><table>
+<thead>
+<tr>
+<th>功能</th>
+<th>状态</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>启动方式</td>
+<td>有</td>
+<td>双击批处理文件，浏览器自动打开本机页面</td>
+</tr>
+<tr>
+<td>三个板块切换</td>
+<td>有</td>
+<td>自动套对应模板</td>
+</tr>
+<tr>
+<td>英文地址（slug）</td>
+<td>有</td>
+<td>决定文章网址 <code>/posts/&lt;地址&gt;/</code>；留空自动生成日期型地址</td>
+</tr>
+<tr>
+<td>图片上传</td>
+<td>有</td>
+<td>按文章分目录存放，避免同名覆盖</td>
+</tr>
+<tr>
+<td>下载文件上传</td>
+<td>有</td>
+<td>存到统一下载目录，正文自动生成「下载」小节</td>
+</tr>
+<tr>
+<td>密码加密</td>
+<td>有</td>
+<td>仅「随记」；不填密码时自动删掉模板里的占位密码</td>
+</tr>
+<tr>
+<td>站点设置</td>
+<td>有</td>
+<td>站点标题、副标题、作者、横幅、头像、公告、主题主色，页面直接改</td>
+</tr>
+<tr>
+<td>文章管理</td>
+<td>有</td>
+<td>右侧列表可打开原文、逐篇删除</td>
+</tr>
+<tr>
+<td>删除文章</td>
+<td>有</td>
+<td>删本机 <code>.md</code> 和该文章的图片目录；云端在下一次上传时同步删除</td>
+</tr>
+<tr>
+<td>本地试构建</td>
+<td>已撤</td>
+<td>合并进「上传到云端」，云端构建失败会回传日志和失败步骤</td>
+</tr>
+<tr>
+<td>发布</td>
+<td>有</td>
+<td>单个「上传到云端」按钮，约 1 分钟</td>
+</tr>
+<tr>
+<td>发布前检查</td>
+<td>有</td>
+<td>单文件超过 25 MB 拦下；信息段缺失、未登录会提示</td>
+</tr>
+</tbody></table>
+<h3 id="3-3-发布链路"><a href="#3-3-发布链路" class="headerlink" title="3.3 发布链路"></a>3.3 发布链路</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">本机写作台 → 云端私有仓库（接口提交，本机不需要 git）</span><br><span class="line">          → 自动构建</span><br><span class="line">          → 公开站点</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>写文章、保存都<strong>只动本机文件</strong>，不点「上传到云端」不会有任何内容离开电脑。</li>
+<li>本机不需要安装 git，也不用手动开网页操作。</li>
+<li>同步是双向的：本地删掉的文章，上传时会一并从云端删除，不会出现「本地删了线上还在」。</li>
+<li>云端仓库里的密钥、登录凭据、本机路径都不随项目文件走。</li>
+</ul>
+<h2 id="更新记录"><a href="#更新记录" class="headerlink" title="更新记录"></a>更新记录</h2><blockquote>
+<p>最新在最上面。格式见 1.3，复制模板见 1.4。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>日期</th>
+<th>类型</th>
+<th>改了什么</th>
+<th>涉及文件</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2026-11-16</td>
+<td>调整</td>
+<td>手机端表格改成横向滚动，避免中文被压成一列一个字；桌面端不受影响</td>
+<td><code>source/css/custom.css</code></td>
+</tr>
+<tr>
+<td>2026-11-16</td>
+<td>调整</td>
+<td>手机端顶部横幅改为整图完整显示，图片下方接主题色带放标题；首页、文章页、归档&#x2F;分类页分别适配，下滑箭头在手机端隐藏</td>
+<td><code>source/css/custom.css</code>、<code>_config.butterfly.yml</code></td>
+</tr>
+<tr>
+<td>2026-11-16</td>
+<td>新增</td>
+<td>文章管理支持逐篇删除：删本机文章和该文章图片目录，云端发布时同步删除</td>
+<td><code>tools/writer.js</code>、<code>tools/writer-ui.html</code>、<code>tools/gh-sync.js</code></td>
+</tr>
+<tr>
+<td>2026-11-16</td>
+<td>调整</td>
+<td>发布按钮合并为一个「上传到云端」，撤掉「先本地试构建」；构建失败会回传日志和失败步骤</td>
+<td><code>tools/writer-ui.html</code></td>
+</tr>
+<tr>
+<td>2026-11-16</td>
+<td>修复</td>
+<td>命令行工具不在系统 PATH 时，发布脚本自动去常见安装位置查找，避免「提示未安装」</td>
+<td><code>tools/gh-sync.js</code></td>
+</tr>
+<tr>
+<td>2026-11-16</td>
+<td>删除</td>
+<td>清理建站时的示例文章，只保留真实内容</td>
+<td><code>source/_posts/</code></td>
+</tr>
+<tr>
+<td>2026-11-16</td>
+<td>新增</td>
+<td>写作台左栏「站点设置」：站点信息、横幅、头像、公告、Follow 链接、主题主色可视化修改，换图自动清理旧格式文件</td>
+<td><code>tools/writer.js</code>、<code>tools/writer-ui.html</code></td>
+</tr>
+<tr>
+<td>2026-11-16</td>
+<td>新增</td>
+<td>本地搜索 + 隐私过滤：加密文章整条从搜索索引剔除</td>
+<td><code>_config.yml</code>、<code>_config.butterfly.yml</code>、<code>scripts/search-filter.js</code></td>
+</tr>
+<tr>
+<td>2026-11-16</td>
+<td>新增</td>
+<td>粉樱配色、深色模式、图片懒加载、自定义 404&#x2F;归档&#x2F;分类&#x2F;标签页样式</td>
+<td><code>_config.butterfly.yml</code>、<code>source/css/</code></td>
+</tr>
+<tr>
+<td>2026-11-16</td>
+<td>新增</td>
+<td>三板块结构（我的软件 &#x2F; 推荐软件 &#x2F; 随记）与对应文章模板；随记支持密码加密</td>
+<td><code>scaffolds/</code>、<code>_config.yml</code>、<code>package.json</code></td>
+</tr>
+</tbody></table>
+<h2 id="已知限制"><a href="#已知限制" class="headerlink" title="已知限制"></a>已知限制</h2><ol>
+<li><strong>加密只锁正文</strong>：标题、网址、日期、分类仍然公开，会出现在归档页、分类页和 RSS 里。目前只是从搜索索引里剔除，归档&#x2F;分类里仍可见。</li>
+<li><strong>密码是明文</strong>存在文章文件里，随文章进云端私有仓库。别复用在别处用过的密码。</li>
+<li><strong>忘了密码自己也解不开</strong>，没有找回途径。</li>
+<li>加密密钥派生迭代次数为 250000，低于当前 OWASP 建议值。<strong>改这个值会让已发布的加密文章解不开</strong>，要改必须连密码一起重新加密，属低优先级。</li>
+<li><strong>下载目录是平铺的</strong>，多篇文章传同名文件会互相覆盖，文件名要带版本号。</li>
+<li><strong>评论系统没开</strong>：它要求仓库公开，和「封闭自用」冲突。配置位留好了，想开再填。</li>
+<li>自定义域名没启用，目前用平台默认地址；启用步骤写在 <code>_config.yml</code> 注释里。</li>
+<li>单文件硬上限 25 MB（平台侧 100 MB），大文件应该走外部网盘或 Release 附件。</li>
+</ol>
+<h2 id="给接手-AI-的约定"><a href="#给接手-AI-的约定" class="headerlink" title="给接手 AI 的约定"></a>给接手 AI 的约定</h2><p>如果你是被叫来继续开发这个站点的 AI，请先按这个顺序来：</p>
+<ol>
+<li>读本机的 <code>MANUAL.md</code>（用户日常怎么用）和 <code>HANDOFF.md</code>（项目背景、换电脑恢复、待办）。</li>
+<li>读本文的「当前功能清单」和「已知限制」，别把已有功能当缺失重做。</li>
+<li>看「更新记录」最近几行，了解上一轮改了什么、可能影响到哪里。</li>
+</ol>
+<p>硬性规则：</p>
+<ul>
+<li><strong>不要改</strong> 已发布文章的文件名（等于改网址，旧链接会失效）。</li>
+<li><strong>不要动</strong> <code>scripts/search-filter.js</code> 和自动构建流程文件；它们分别关系到隐私过滤和能否发布成功。</li>
+<li>样式改动写进 <code>source/css/custom.css</code>，不要改 <code>node_modules</code>（重装依赖或升级主题会被覆盖）。</li>
+<li>写作台只监听 <code>127.0.0.1</code>，不要改成对外监听。</li>
+<li>发布统一走写作台的「上传到云端」，不要另建发布通道。</li>
+<li>发布前必须本地 <code>hexo generate</code> 通过；改完在手机视口（建议 390×844）和桌面视口各看一次。</li>
+<li><strong>隐私红线</strong>：文章和附件会进入公开站点，任何人都能下载。不要往文章、截图、示例里放令牌、密码、账号、本机绝对路径、内网地址。</li>
+<li>不要删除 <code>source/_posts/</code> 里的真实文章，除非用户明确要求。</li>
+</ul>
+<h2 id="下一步计划"><a href="#下一步计划" class="headerlink" title="下一步计划"></a>下一步计划</h2><ul>
+<li>想推广时放开搜索引擎收录（删掉 <code>robots.txt</code> 里的禁止规则）。</li>
+<li>需要评论时再评估是否接受公开仓库。</li>
+<li>加密文章标题是否也隐藏，需要单独加一层处理。</li>
+<li>横幅图可以按季节&#x2F;节日轮换，换图在「站点设置」里操作，不用改代码。</li>
+</ul>
+</div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar" loading='lazy'/></div><div class="author-info-name">wawel</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">4</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/wawel114"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">记录日常、我做的小工具和觉得好用的软件。</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/site-changelog/" title="本站功能更新日志">本站功能更新日志</a><time datetime="2026-11-16T16:57:00.000Z" title="发表于 2026-11-17 00:57:00">2026-11-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/p20261116-2334/" title="战地1数据查询工具手机版">战地1数据查询工具手机版</a><time datetime="2026-11-16T15:34:14.000Z" title="发表于 2026-11-16 23:34:14">2026-11-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/p20261116-2020/" title="战地一小工具网页版">战地一小工具网页版</a><time datetime="2026-11-16T12:20:34.000Z" title="发表于 2026-11-16 20:20:34">2026-11-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/p20261116-1919/" title="战地一数据查询工具">战地一数据查询工具</a><time datetime="2026-11-16T11:19:59.000Z" title="发表于 2026-11-16 19:19:59">2026-11-16</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline"><i class="fas fa-folder-open"></i><span>分类</span></div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E6%88%91%E7%9A%84%E8%BD%AF%E4%BB%B6/"><span class="card-category-list-name">我的软件</span><span class="card-category-list-count">4</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/%E6%B8%B8%E6%88%8F%E5%B7%A5%E5%85%B7/" style="font-size: 1.1em; color: #999">游戏工具</a> <a href="/tags/%E6%9B%B4%E6%96%B0%E6%97%A5%E5%BF%97/" style="font-size: 1.1em; color: #999">更新日志</a> <a href="/tags/%E5%8D%9A%E5%AE%A2/" style="font-size: 1.1em; color: #999">博客</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline"><i class="fas fa-archive"></i><span>归档</span></div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/11/">
+            <span class="card-archive-list-date">
+              十一月 2026
+            </span>
+            <span class="card-archive-list-count">4</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">4</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-11-16T17:07:49.563Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2026 By wawel</span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.2"></script><script src="/js/main.js?v=5.7.2"></script><div class="js-pjax"></div><script src="/js/mobile-nav-capsules.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章 / 工具名" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.7.2"></script></div></div></body></html>
