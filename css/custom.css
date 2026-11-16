@@ -1,0 +1,64 @@
+/* ==================================================================
+ * 自定义样式（由 _config.butterfly.yml 的 inject.head 引入）
+ * 主题升级 / 重装依赖都不会覆盖这里
+ * ================================================================== */
+
+/* ------------------------------------------------------------------
+ * 手机端：顶部横幅完整显示
+ *
+ * 主题默认是 background-size: cover + 固定高度（首页 100vh、文章页 360px），
+ * 竖屏手机上等于把一张 3:1 的横图放大好几倍，只看得到中间一小块。
+ * 这里改成「整宽完整显示」，图片下方接一条主题色带，标题放在色带里。
+ *
+ * 换横幅图不用改这里：background-size 用 contain，任何比例都不会裁。
+ * 色带高度按标题内容分别留了余量。
+ * ------------------------------------------------------------------ */
+@media screen and (max-width: 768px) {
+  /* 所有带横幅的页面：整张图完整显示，别再用 cover 放大裁切 */
+  #page-header:not(.not-top-img) {
+    background-size: contain;
+    background-position: center top;
+    background-attachment: scroll;
+    background-color: var(--default-bg-color);
+  }
+
+  /* 首页：横幅（3:1）整宽铺开 + 84px 站点名色带 */
+  #page-header.full_page {
+    height: calc(100vw / 3 + 84px);
+  }
+
+  /* 首页站点名：从横幅正中挪到下方色带 */
+  #page-header.full_page #site-info {
+    top: auto;
+    bottom: 20px;
+  }
+
+  #page-header.full_page #site-title {
+    font-size: 1.5em;
+    line-height: 1.2;
+  }
+
+  /* 高度变矮后，下滑箭头会压住标题，手机端直接隐藏 */
+  #page-header.full_page #scroll-down {
+    display: none;
+  }
+
+  /* 文章页：标题 + 日期/分类要多留一点空间 */
+  #page-header.post-bg {
+    height: calc(100vw / 3 + 150px);
+  }
+
+  #page-header.post-bg #post-info {
+    bottom: 20px;
+  }
+
+  /* 归档 / 分类 / 标签等页面：标题在色带里居中偏下 */
+  #page-header.not-home-page {
+    height: calc(100vw / 3 + 100px);
+  }
+
+  #page-header.not-home-page #page-site-info {
+    top: auto;
+    bottom: 30px;
+  }
+}
