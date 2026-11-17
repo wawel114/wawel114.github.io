@@ -188,6 +188,25 @@
   }
 }
 
+/* ------------------------------------------------------------------
+ * 桌面端：顶部横幅完整显示（保持主题原高度，图片按比例居中）
+ *
+ * 主题默认 background-size: cover，3:1 的横图在「宽而矮」的普通窗口
+ * （浏览器没全屏时很常见）会被裁掉大量左右内容，只看得到中间一小块。
+ * 这里改成 contain：任何窗口比例都整张显示，不裁切。
+ * 高度维持主题原值（首页 100vh、文章页/归档页 400px），
+ * 图画不满的部分露出的是横幅容器背景色（主题自带遮罩会统一压色）。
+ * background-attachment 改 scroll：contain + fixed 定位会错乱。
+ * ------------------------------------------------------------------ */
+@media screen and (min-width: 769px) {
+  #page-header:not(.not-top-img) {
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+  }
+}
+
 /* 电脑端：胶囊条压根不生成显示区域，避免万一脚本先跑导致的闪现 */
 @media screen and (min-width: 769px) {
   #aside-content .mnav-capsules {
