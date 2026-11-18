@@ -32,6 +32,9 @@
     // 顺序：先放导航类（分类/标签/归档），最后才是文章，
     // 这样不滑动就能看到最常用的栏目入口。
 
+    // 更新日志固定入口（页面 /changelog/，不是文章）
+    addPill('更新日志', '/changelog/');
+
     // 分类
     var cats = aside.querySelector('.card-categories');
     if (cats) {

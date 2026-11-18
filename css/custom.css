@@ -141,6 +141,24 @@
     -webkit-tap-highlight-color: rgba(0, 0, 0, .06);
   }
 
+  /* ------------------------------------------------------------------
+   * 暗色主题：文章卡片与页面背景几乎同色（卡片 #121212 vs 背景 ≈#0d0d0d），
+   * 卡片之间看不出边界、连成一片。这里给卡片加一圈细描边 + 微亮底色。
+   * 只在暗色模式下生效，亮色模式卡片本来就是白底、对比足够。
+   * ------------------------------------------------------------------ */
+  [data-theme="dark"] #recent-posts .recent-post-item {
+    background: #1d1d1d;
+    border: 1px solid rgba(255, 255, 255, .12);
+    box-shadow: none;
+  }
+
+  /* 暗色下归档/分类列表里的文章项同理加分隔 */
+  [data-theme="dark"] .article-sort-item {
+    border: 1px solid rgba(255, 255, 255, .12);
+    background: #1d1d1d;
+    border-radius: 8px;
+  }
+
   /* 胶囊导航条：一行可左右滑 */
   #aside-content .mnav-capsules {
     margin: 0 0 4px;
