@@ -3,43 +3,76 @@
  * 主题升级 / 重装依赖都不会覆盖这里
  * ================================================================== */
 
+/* 去掉 Butterfly 主题自带的「鼠标悬停头像旋转一圈」效果（全端生效） */
+.avatar-img img:hover {
+  transform: none !important;
+}
+
 /* ------------------------------------------------------------------
- * 手机端：顶部横幅完整显示（图片为主 + 细色带）
+ * 手机端：顶部横幅改用竖屏图，铺满整个头部（不再有粉色色带）
  *
- * 主题默认是 background-size: cover + 固定高度（首页 100vh、文章页 360px），
- * 竖屏手机上等于把一张横图放大好几倍，只看得到中间一小块。
- * 这里改成「整宽完整显示」：图片占满宽度，下方只留一条细主题色带放标题。
+ * 新横幅是竖图 banner-mobile.jpg（1000×1778，约 9:16）。手机端用它整张
+ * 铺满 header：background-size:cover + 高度按图片比例（100vw × 1778/1000
+ * ≈ 178vw），这样图刚好完整显示、不留缝，也就没有粉色底色露出来。
+ * 标题改为浮在图片底部，加一层自下而上的暗色渐变遮罩，保证白字看得清。
  *
- * 关键：当前横幅是 3:2（1920×1280），整宽下高度约等于 100vw * 2 / 3
- * （390px 屏 ≈ 260px）。容器高度必须紧贴这个值，色带只留够放标题的一点点，
- * 否则多出来的高度会被 background-color 填成一整块粉色，看起来像图片被挡住一截。
- *
- * 换横幅图只要比例还是 3:2 就不用改这里；若换了别的比例，按「宽度 ÷ 宽高比」
- * 改下面三处的 100vw 系数即可，background-size: contain 保证怎么都不裁图。
+ * 背景图是主题以内联 style 写在 #page-header 上的，优先级很高，
+ * 所以这里必须加 !important 才能覆盖成手机专属竖图。
+ * 桌面端（>768px）整套规则都不生效，仍用原来的横图。
  * ------------------------------------------------------------------ */
 @media screen and (max-width: 768px) {
-  /* 所有带横幅的页面：整张图完整显示，别再用 cover 放大裁切 */
+  /* 所有带横幅的页面：换成竖图、cover 铺满，底色设深色（万一有缝也不是粉色） */
   #page-header:not(.not-top-img) {
-    background-size: contain;
-    background-position: center top;
-    background-attachment: scroll;
-    background-color: var(--default-bg-color);
+    background-image: url('/img/banner-mobile.jpg') !important;
+    background-size: cover !important;
+    background-position: center center !important;
+    background-attachment: scroll !important;
+    background-color: #1a1a1a !important;
   }
 
-  /* 首页：横幅（3:2）整宽铺开 + 40px 细色带放站点名 */
-  #page-header.full_page {
-    height: calc(100vw * 2 / 3 + 40px);
+  /* 竖图上自下而上的暗色遮罩，让浮在图上的白色标题可读 */
+  #page-header:not(.not-top-img)::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, .62) 0%,
+      rgba(0, 0, 0, .28) 30%,
+      transparent 58%
+    );
   }
 
-  /* 首页站点名：压进下方细色带，缩小字号避免溢出 */
+  /* 标题压在遮罩之上 */
+  #page-header #site-info,
+  #page-header #post-info,
+  #page-header #page-site-info {
+    z-index: 1;
+  }
+
+  /* 竖图完整高度：100vw × 1778/1000 ≈ 178vw */
+  #page-header.full_page,
+  #page-header.post-bg,
+  #page-header.not-home-page {
+    height: 178vw;
+  }
+
+  /* 首页站点名：浮在图片底部，白色加阴影 */
   #page-header.full_page #site-info {
     top: auto;
-    bottom: 6px;
+    bottom: 34px;
   }
 
   #page-header.full_page #site-title {
-    font-size: 1.15em;
+    font-size: 1.5em;
     line-height: 1.2;
+    color: #fff !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, .7);
   }
 
   /* 高度变矮后，下滑箭头会压住标题，手机端直接隐藏 */
@@ -47,30 +80,28 @@
     display: none;
   }
 
-  /* 文章页：标题 + 日期/分类较多，色带比首页略高 */
-  #page-header.post-bg {
-    height: calc(100vw * 2 / 3 + 92px);
-  }
-
+  /* 文章标题：浮在图片底部，白色 + 阴影，允许长标题换行 */
   #page-header.post-bg #post-info {
-    bottom: 12px;
+    bottom: 30px;
   }
 
-  /* 文章标题：限制字号并允许长标题换行，避免溢出屏幕 */
   #page-header.post-bg .post-title {
-    font-size: 1.35em;
+    font-size: 1.5em;
     line-height: 1.3;
     overflow-wrap: anywhere;
+    color: #fff !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, .7);
   }
 
-  /* 归档 / 分类 / 标签等页面：标题在细色带里居中偏下 */
-  #page-header.not-home-page {
-    height: calc(100vw * 2 / 3 + 52px);
-  }
-
+  /* 归档 / 分类 / 标签等页面：标题同样浮在图片底部 */
   #page-header.not-home-page #page-site-info {
     top: auto;
-    bottom: 10px;
+    bottom: 30px;
+  }
+
+  #page-header.not-home-page #site-title {
+    color: #fff !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, .7);
   }
 
   /* ------------------------------------------------------------------
@@ -107,9 +138,13 @@
     padding: 18px;
   }
 
+  /* 头像恢复圆形：填满外层 110px 的圆形裁剪框。
+     之前这里把 img 缩成 72px，图片比圆框小，圆边裁不到它，就露出了原图的方形轮廓。
+     只设 width/height:100%（继承主题的 border-radius:50% + object-fit:cover），
+     让外层圆形裁住图片即可。 */
   #aside-content .card-info .avatar-img img {
-    width: 72px;
-    height: 72px;
+    width: 100%;
+    height: 100%;
   }
 
   /* 隐藏被胶囊取代的次要卡片 */
