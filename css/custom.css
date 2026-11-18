@@ -232,3 +232,139 @@
     display: none !important;
   }
 }
+
+/* ------------------------------------------------------------------
+ * 电脑端：横幅下方的栏目导航条（由 source/js/section-nav.js 生成）
+ * 手机端不显示，仍走胶囊导航；配色跟随主题变量，暗色自动适配。
+ * 主色硬编码 #E06A8B 与 _config.butterfly.yml 的 theme_color.main 一致，
+ * 换主色时记得同步改这里两处。
+ * ------------------------------------------------------------------ */
+.section-nav {
+  display: none;
+}
+
+@media screen and (min-width: 769px) {
+  .section-nav {
+    display: block;
+    background: var(--card-bg);
+    border-bottom: 1px solid rgba(224, 106, 139, .2);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, .05);
+  }
+
+  .section-nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .section-nav-item {
+    padding: 7px 18px;
+    border-radius: 999px;
+    color: var(--font-color);
+    font-size: 14px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background .2s, color .2s;
+  }
+
+  .section-nav-item:hover {
+    background: rgba(224, 106, 139, .12);
+    color: #E06A8B;
+  }
+
+  .section-nav-item.active {
+    background: #E06A8B;
+    color: #fff;
+  }
+}
+
+/* ------------------------------------------------------------------
+ * 栏目聚合页（scripts/section-pages.js 构建时生成 /software/、/essays/
+ * /dark-corner/、/toolbox/），样式与首页卡片同色系
+ * ------------------------------------------------------------------ */
+.sec-intro {
+  color: var(--font-color);
+  opacity: .75;
+  font-size: 14px;
+  line-height: 1.7;
+  margin: 0 0 18px;
+}
+
+.sec-list {
+  display: grid;
+  gap: 12px;
+}
+
+.sec-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  border: 1px solid rgba(224, 106, 139, .22);
+  border-radius: 10px;
+  background: var(--card-bg);
+  text-decoration: none;
+  transition: border-color .2s, transform .2s, box-shadow .2s;
+}
+
+.sec-item:hover {
+  border-color: #E06A8B;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(224, 106, 139, .12);
+}
+
+.sec-item-main {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.sec-item-title {
+  color: var(--font-color);
+  font-size: 16px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.sec-item-meta {
+  color: var(--font-color);
+  opacity: .6;
+  font-size: 12px;
+}
+
+.sec-item-arrow {
+  color: #E06A8B;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.sec-lock {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 7px;
+  border: 1px solid rgba(224, 106, 139, .5);
+  border-radius: 999px;
+  color: #E06A8B;
+  font-size: 11px;
+  font-weight: normal;
+}
+
+.sec-empty {
+  padding: 28px 18px;
+  border: 1px dashed rgba(224, 106, 139, .35);
+  border-radius: 10px;
+  color: var(--font-color);
+  opacity: .7;
+  font-size: 14px;
+  text-align: center;
+}
+
+[data-theme="dark"] .sec-item {
+  background: #1d1d1d;
+  border-color: rgba(255, 255, 255, .12);
+}
