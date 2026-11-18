@@ -259,6 +259,17 @@
     background-repeat: no-repeat;
     background-attachment: scroll;
   }
+
+  /* 首页横幅中间的站点名（h1#site-title = wawel）去掉，
+     让进首页第一眼是一整张完整无遮挡的图；文章页/归档页标题不受影响。 */
+  #page-header.full_page #site-info {
+    display: none;
+  }
+
+  /* 隐藏标题后下滑箭头也失去了意义，一并去掉 */
+  #page-header.full_page #scroll-down {
+    display: none;
+  }
 }
 
 /* 电脑端：胶囊条压根不生成显示区域，避免万一脚本先跑导致的闪现 */
