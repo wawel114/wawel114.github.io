@@ -64,12 +64,12 @@
     height: 178vw;
   }
 
-  /* 文章页自带封面时：头图直接用封面（不套竖图横幅），
-     高度收回正常比例，点进文章第一眼就能看到封面、正文也更靠前。 */
+  /* 文章页自带封面时：头图直接用封面（不套竖图横幅）。
+     默认 62vw 是横图的矮头图；若封面是竖图，/js/mobile-post-cover.js
+     会按图片真实宽高写入内联 height（最高 178vw）让它完整显示。
+     这里不设 max-height，否则会把竖图的高度卡回矮条。 */
   #page-header.post-bg.has-post-cover {
     height: 62vw;
-    min-height: 240px;
-    max-height: 360px;
     background-size: cover !important;
     background-position: center center !important;
     background-attachment: scroll !important;
