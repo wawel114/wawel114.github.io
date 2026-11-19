@@ -161,6 +161,14 @@
     width: 100%;
   }
 
+  /* 文章详情页例外：点进来先读正文，作者卡片/公告等挪到正文之后。
+     首页等「page」页面仍保持上面的个人信息置顶，不受影响。 */
+  #body-wrap.post #content-inner.layout #aside-content {
+    order: 2;
+    margin-top: 24px;
+    margin-bottom: 0;
+  }
+
   /* 置顶后的个人信息卡：压缩内边距，别占太多高度 */
   #aside-content .card-info {
     padding: 18px;
