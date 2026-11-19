@@ -21,8 +21,10 @@
  * 桌面端（>768px）整套规则都不生效，仍用原来的横图。
  * ------------------------------------------------------------------ */
 @media screen and (max-width: 768px) {
-  /* 所有带横幅的页面：换成竖图、cover 铺满，底色设深色（万一有缝也不是粉色） */
-  #page-header:not(.not-top-img) {
+  /* 所有带横幅的页面：换成竖图、cover 铺满，底色设深色（万一有缝也不是粉色）
+     例外：文章页自带封面的（.has-post-cover，由 /js/mobile-post-cover.js 标记），
+     保留文章自己的封面当头图，不再覆盖成统一竖图横幅。 */
+  #page-header:not(.not-top-img):not(.has-post-cover) {
     background-image: url('/img/banner-mobile.jpg') !important;
     background-size: cover !important;
     background-position: center center !important;
@@ -62,10 +64,21 @@
     height: 178vw;
   }
 
-  /* 首页站点名：浮在图片底部，白色加阴影 */
+  /* 文章页自带封面时：头图直接用封面（不套竖图横幅），
+     高度收回正常比例，点进文章第一眼就能看到封面、正文也更靠前。 */
+  #page-header.post-bg.has-post-cover {
+    height: 62vw;
+    min-height: 240px;
+    max-height: 360px;
+    background-size: cover !important;
+    background-position: center center !important;
+    background-attachment: scroll !important;
+  }
+
+  /* 首页站点名：浮在图片底部，白色加阴影；底部留出空间给上滑箭头 */
   #page-header.full_page #site-info {
     top: auto;
-    bottom: 34px;
+    bottom: 56px;
   }
 
   #page-header.full_page #site-title {
@@ -75,9 +88,24 @@
     text-shadow: 0 2px 8px rgba(0, 0, 0, .7);
   }
 
-  /* 高度变矮后，下滑箭头会压住标题，手机端直接隐藏 */
+  /* 首页横幅底部：上滑提示箭头。
+     手机上是「往上滑 = 继续往下看」，所以把主题自带的向下箭头旋转 180°
+     变成向上，并做上下浮动的呼吸动画；点击仍沿用主题的下滚行为。 */
   #page-header.full_page #scroll-down {
-    display: none;
+    bottom: 12px;
+    z-index: 2;
+  }
+
+  #page-header.full_page #scroll-down .scroll-down-effects {
+    color: #fff;
+    font-size: 22px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, .75);
+    animation: mobileSwipeUp 1.6s ease-in-out infinite;
+  }
+
+  @keyframes mobileSwipeUp {
+    0%, 100% { transform: translateY(5px) rotate(180deg); opacity: .5; }
+    50%      { transform: translateY(-6px) rotate(180deg); opacity: 1; }
   }
 
   /* 文章标题：浮在图片底部，白色 + 阴影，允许长标题换行 */
