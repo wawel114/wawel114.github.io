@@ -8,6 +8,20 @@
   transform: none !important;
 }
 
+/* 关闭主题默认的进入页面动画，避免文章页头图/内容每次进入都“跳一下/放大一下”
+ * - header-effect: 非首页头图进入时位移动画
+ * - titleScale:    标题缩放进入动画
+ * - bottom-top:    正文/页脚上移进入动画
+ */
+#page-header:not(.full_page),
+#nav.show,
+#site-title,
+#site-subtitle,
+#content-inner,
+#footer {
+  animation: none !important;
+}
+
 /* ------------------------------------------------------------------
  * 手机端：顶部横幅改用竖屏图，铺满整个头部（不再有粉色色带）
  *
