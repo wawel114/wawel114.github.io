@@ -12,6 +12,7 @@
  * - header-effect: 非首页头图进入时位移动画
  * - titleScale:    标题缩放进入动画
  * - bottom-top:    正文/页脚上移进入动画
+ * 同时禁用文章头图区域的 transform/过渡，避免封面在进入时出现缩放/跳动（PC/手机双端）
  */
 #page-header:not(.full_page),
 #nav.show,
@@ -19,6 +20,18 @@
 #site-subtitle,
 #content-inner,
 #footer {
+  animation: none !important;
+}
+#page-header.post-bg {
+  transition: none !important;
+  transform: none !important;
+}
+#page-header.post-bg::before,
+#page-header.post-bg #post-info,
+#page-header.post-bg .post-title,
+#page-header.post-bg #post-meta {
+  transition: none !important;
+  transform: none !important;
   animation: none !important;
 }
 
