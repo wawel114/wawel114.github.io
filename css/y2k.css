@@ -1,0 +1,350 @@
+/* ==================================================================
+ * 单篇风格皮肤 + 千禧年专题页样式
+ * ------------------------------------------------------------------
+ * 所有规则都限定在 body.post-style-* 下：
+ *   - 没选风格的页面不带这些 class，完全不受影响；
+ *   - neon/win98/crt/y2k 是「轻风格」，只改背景/氛围，不动正文排版；
+ *   - y2kfull 是 /y2k/ 专题页专用，整套界面自己画，脱离主题默认皮肤。
+ * 文件由 inject.head 全局引入，但靠作用域隔离，体积很小。
+ * ================================================================== */
+
+/* ---------- 轻风格 1：霓虹夜色（只换背景氛围） ---------- */
+body.post-style-neon #page-header.post-bg {
+  background-image: linear-gradient(125deg, #2b0f45 0%, #12103a 45%, #062a3a 100%) !important;
+}
+body.post-style-neon::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(circle at 18% 12%, rgba(255, 59, 196, .10), transparent 42%),
+              radial-gradient(circle at 82% 78%, rgba(0, 229, 255, .10), transparent 42%);
+}
+
+/* ---------- 轻风格 2：Win98 窗口（正文套一层经典窗口边） ---------- */
+body.post-style-win98 #article-container {
+  background: #c0c0c0;
+  border-top: 2px solid #fff;
+  border-left: 2px solid #fff;
+  border-right: 2px solid #5a5a5a;
+  border-bottom: 2px solid #5a5a5a;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, .25);
+  padding: 18px 20px;
+  border-radius: 0;
+  color: #111;
+}
+body.post-style-win98[data-theme="dark"] #article-container {
+  background: #2a2a2a;
+  color: #eee;
+  border-color: #6a6a6a #111 #111 #6a6a6a;
+}
+
+/* ---------- 轻风格 3：CRT 扫描线（覆盖一层细横纹 + 暗角） ---------- */
+body.post-style-crt::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, .11) 0px,
+      rgba(0, 0, 0, .11) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, .22) 100%);
+}
+
+/* ---------- 轻风格 4：千禧年氛围（点进专题页文章用，轻背景） ---------- */
+body.post-style-y2k #page-header.post-bg {
+  background-image: linear-gradient(135deg, #ff6ec4 0%, #7873f5 50%, #4deeea 100%) !important;
+}
+
+/* ==================================================================
+ * y2kfull：/y2k/ 专题页全套界面
+ * ------------------------------------------------------------------
+ * 思路：把主题自带的 header/侧栏/页脚藏掉，让内容区自己铺满整屏，
+ * 全部用下面这套 Win98+霓虹+CRT 的样式重画。因为 body 带专属 class，
+ * 只影响这一个页面，其他页面一律不触发。
+ * ================================================================== */
+body.post-style-y2kfull {
+  background: #0b0618 !important;
+}
+body.post-style-y2kfull #body-wrap {
+  background: linear-gradient(180deg, #12082a 0%, #0b0618 100%) !important;
+}
+body.post-style-y2kfull #page-header,
+body.post-style-y2kfull #aside-content,
+body.post-style-y2kfull #footer,
+body.post-style-y2kfull .footer,
+body.post-style-y2kfull #rightside,
+body.post-style-y2kfull .section-nav {
+  display: none !important;
+}
+body.post-style-y2kfull #content-inner.layout {
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+body.post-style-y2kfull #article-container {
+  margin: 0 !important;
+  padding: 0 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+/* 专题页保留一个「返回首页」的小入口（藏掉主题 header 后唯一导航） */
+body.post-style-y2kfull #nav {
+  display: none !important;
+}
+
+.y2k-wrap {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% -10%, rgba(123, 97, 255, .35), transparent 55%),
+    linear-gradient(180deg, #1a0b3a 0%, #0b0618 70%);
+  color: #eafaff;
+  font-family: "Tahoma", "Microsoft YaHei", sans-serif;
+  padding: 46px 16px 40px;
+  box-sizing: border-box;
+}
+
+/* CRT 扫描线 + 轻微噪点纹理（纯 CSS，不引图片） */
+.y2k-crt {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  background: repeating-linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, .16) 0px,
+      rgba(0, 0, 0, .16) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+}
+.y2k-crt::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 45%, rgba(0, 0, 0, .55) 100%);
+}
+
+.y2k-inner {
+  position: relative;
+  z-index: 4;
+  width: min(720px, 100%);
+  margin: 0 auto;
+}
+
+.y2k-header {
+  text-align: center;
+  margin-bottom: 26px;
+}
+.y2k-back {
+  display: inline-block;
+  margin-bottom: 16px;
+  padding: 5px 12px;
+  font-family: "Tahoma", "Microsoft YaHei", sans-serif;
+  font-size: 12px;
+  color: #111;
+  text-decoration: none;
+  background: #c0c0c0;
+  border-top: 2px solid #fff;
+  border-left: 2px solid #fff;
+  border-right: 2px solid #404040;
+  border-bottom: 2px solid #404040;
+}
+.y2k-back:hover {
+  background: #e8e8ff;
+  color: #000080;
+}
+.y2k-back:active {
+  border-color: #404040 #fff #fff #404040;
+}
+.y2k-sub {
+  font-size: 12px;
+  letter-spacing: .42em;
+  color: #4deeea;
+  text-shadow: 0 0 8px rgba(77, 238, 234, .8);
+  text-transform: uppercase;
+}
+.y2k-sub-bottom {
+  color: #ff6ec4;
+  text-shadow: 0 0 8px rgba(255, 110, 196, .8);
+  margin-top: 6px;
+}
+.y2k-title {
+  position: relative;
+  display: inline-block;
+  margin: 10px 0 4px;
+  font-size: clamp(34px, 9vw, 64px);
+  font-weight: 900;
+  letter-spacing: .06em;
+  color: #fff;
+  white-space: nowrap;
+  text-shadow:
+    0 0 6px #fff,
+    0 0 14px #ff3bc4,
+    0 0 28px #7b61ff,
+    0 0 48px #4deeea;
+  animation: y2kFlicker 6s infinite;
+}
+@keyframes y2kFlicker {
+  0%, 92%, 96%, 100% { opacity: 1; }
+  94% { opacity: .72; }
+  98% { opacity: .85; }
+}
+
+/* Win98 窗口 */
+.y2k-window {
+  background: #c0c0c0;
+  border-top: 3px solid #fff;
+  border-left: 3px solid #fff;
+  border-right: 3px solid #404040;
+  border-bottom: 3px solid #404040;
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, .45);
+  color: #111;
+}
+.y2k-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 5px 8px;
+  background: linear-gradient(90deg, #000080 0%, #1084d0 100%);
+  color: #fff;
+  font-weight: bold;
+  font-size: 14px;
+}
+.y2k-btns {
+  display: inline-flex;
+  gap: 4px;
+  flex: none;
+}
+.y2k-btns i {
+  display: inline-block;
+  width: 18px;
+  height: 17px;
+  line-height: 15px;
+  text-align: center;
+  font-style: normal;
+  font-size: 12px;
+  color: #111;
+  background: #c0c0c0;
+  border-top: 2px solid #fff;
+  border-left: 2px solid #fff;
+  border-right: 2px solid #404040;
+  border-bottom: 2px solid #404040;
+}
+.y2k-window-body {
+  padding: 18px 16px 20px;
+  background: #c0c0c0;
+}
+.y2k-greeting {
+  margin: 0 0 14px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.y2k-greeting b {
+  color: #000080;
+  font-size: 18px;
+}
+.y2k-tip {
+  color: #444;
+  font-size: 13px;
+}
+
+/* 文章列表 */
+.y2k-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.y2k-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: #dcdcdc;
+  border-top: 2px solid #fff;
+  border-left: 2px solid #fff;
+  border-right: 2px solid #808080;
+  border-bottom: 2px solid #808080;
+  color: #111 !important;
+  text-decoration: none !important;
+  transition: background .15s, transform .1s;
+}
+.y2k-item:hover {
+  background: #e8e8ff;
+  transform: translate(-1px, -1px);
+}
+.y2k-item:active {
+  border-color: #808080 #fff #fff #808080;
+  transform: translate(1px, 1px);
+}
+.y2k-item-no {
+  flex: none;
+  width: 30px;
+  text-align: center;
+  font-family: "Courier New", monospace;
+  font-weight: bold;
+  color: #000080;
+  font-size: 15px;
+}
+.y2k-item-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.y2k-item-title {
+  font-weight: bold;
+  font-size: 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.y2k-item-meta {
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+  color: #666;
+}
+.y2k-lock {
+  margin-left: 6px;
+  font-size: 11px;
+  color: #a00;
+  font-weight: normal;
+}
+.y2k-item-go {
+  flex: none;
+  font-size: 12px;
+  color: #000080;
+}
+
+.y2k-footer {
+  margin-top: 22px;
+  text-align: center;
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+  letter-spacing: .1em;
+  color: #7b61ff;
+  text-shadow: 0 0 8px rgba(123, 97, 255, .7);
+}
+
+@media screen and (max-width: 768px) {
+  body.post-style-y2kfull .y2k-wrap {
+    padding: 26px 12px 30px;
+  }
+  .y2k-title { font-size: clamp(30px, 11vw, 48px); }
+  .y2k-item-go { display: none; }
+  .y2k-item-title { font-size: 14px; }
+}

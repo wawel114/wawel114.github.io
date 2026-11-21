@@ -38,6 +38,7 @@
     addPill('阴暗角落', '/dark-corner/');
     addPill('工具箱', '/toolbox/');
     addPill('更新日志', '/changelog/');
+    addPill('千禧年', '/y2k/');
 
     // 分类
     var cats = aside.querySelector('.card-categories');

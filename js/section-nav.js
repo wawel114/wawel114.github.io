@@ -16,7 +16,8 @@
     ['随笔', '/essays/'],
     ['阴暗角落', '/dark-corner/'],
     ['工具箱', '/toolbox/'],
-    ['更新日志', '/changelog/']
+    ['更新日志', '/changelog/'],
+    ['千禧年', '/y2k/']
   ];
 
   function build() {
