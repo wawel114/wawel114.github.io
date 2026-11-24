@@ -7,7 +7,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://wawel114.github.io/img/avatar.jpg">
 <meta property="article:published_time" content="2026-11-23T17:35:00.000Z">
-<meta property="article:modified_time" content="2026-11-24T01:40:34.619Z">
+<meta property="article:modified_time" content="2026-11-24T01:44:45.438Z">
 <meta property="article:author" content="wawel">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://wawel114.github.io/img/avatar.jpg"><script type="application/ld+json"></script><link rel="shortcut icon" href="/favicon.png"><link rel="canonical" href="https://wawel114.github.io/changelog/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.2"><link rel="stylesheet" href="/lib/fontawesome/css/all.min.css"><script>
@@ -229,6 +229,12 @@
 </tr>
 </thead>
 <tbody><tr>
+<td>2026-11-24</td>
+<td>修复</td>
+<td>双击 bat 启动写作台后上传仍报 <code>HTTP 401 Bad credentials</code> 的根因修复：发布目标仓库与 gh 程序原先依赖环境变量和 PATH，双击 bat &#x2F; PowerShell 的启动环境不同会漂移到失效凭证；现改为<strong>仓库写死</strong> <code>wawel114/blog</code>、<strong>优先用已验证的绝对路径 gh</strong>、并清除会干扰配置目录的 <code>GH_*</code> 变量，任何启动方式行为一致。另重新发布了「关于维和者」一文（替换图片排版错位的旧版）</td>
+<td><code>tools/gh-sync.js</code>、<code>source/_posts/p20261124-0834.md</code></td>
+</tr>
+<tr>
 <td>2026-11-24</td>
 <td>修复</td>
 <td>发布报 <code>HTTP 401 Bad credentials</code> 的根因修复：写作台把 GitHub token 缓存在进程里，重新登录 gh 后旧 token 仍被复用导致持续 401；改为<strong>每次上传都重新读凭证</strong>，以后重新登录 gh 无需重启写作台即可生效</td>
