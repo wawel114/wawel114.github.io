@@ -1,10 +1,10 @@
 /* ==================================================================
- * 单篇风格皮肤 + 千禧年专题页样式
+ * 单篇风格皮肤 + 千禧年展示台样式
  * ------------------------------------------------------------------
  * 所有规则都限定在 body.post-style-* 下：
  *   - 没选风格的页面不带这些 class，完全不受影响；
  *   - neon/win98/crt/y2k 是「轻风格」，只改背景/氛围，不动正文排版；
- *   - y2kfull 是 /y2k/ 专题页专用，整套界面自己画，脱离主题默认皮肤。
+ *   - y2kfull 是 /y2k/ 展示台专用，整套界面自己画，脱离主题默认皮肤。
  * 文件由 inject.head 全局引入，但靠作用域隔离，体积很小。
  * ================================================================== */
 
@@ -63,26 +63,32 @@ body.post-style-y2k #page-header.post-bg {
 }
 
 /* ==================================================================
- * y2kfull：/y2k/ 专题页全套界面
+ * y2kfull：/y2k/ 中式梦核展示台
  * ------------------------------------------------------------------
- * 思路：把主题自带的 header/侧栏/页脚藏掉，让内容区自己铺满整屏，
- * 全部用下面这套 Win98+霓虹+CRT 的样式重画。因为 body 带专属 class，
- * 只影响这一个页面，其他页面一律不触发。
+ * 气质：褪色老照片 / 蓝绿玻璃 / 上白下绿墙裙 / 空无一人的午后。
+ * 做旧程度由 --age-* 五个 CSS 变量控制，由 y2k-aging.js 的滑块驱动。
  * ================================================================== */
 body.post-style-y2kfull {
-  background: #0b0618 !important;
+  background: #dcd8c4 !important;
+}
+/* html 兜底：主题可能在 html 层留透明背景，暗色系统下会露出黑边 */
+html:has(body.post-style-y2kfull) {
+  background: #dcd8c4 !important;
 }
 body.post-style-y2kfull #body-wrap {
-  background: linear-gradient(180deg, #12082a 0%, #0b0618 100%) !important;
+  background: #dcd8c4 !important;
 }
 body.post-style-y2kfull #page-header,
 body.post-style-y2kfull #aside-content,
 body.post-style-y2kfull #footer,
 body.post-style-y2kfull .footer,
 body.post-style-y2kfull #rightside,
-body.post-style-y2kfull .section-nav {
+body.post-style-y2kfull .section-nav,
+body.post-style-y2kfull #nav {
   display: none !important;
 }
+/* #page 自带 50px 40px padding，不清掉展示台四周会露出主题底色 */
+body.post-style-y2kfull #page,
 body.post-style-y2kfull #content-inner.layout {
   padding: 0 !important;
   margin: 0 !important;
@@ -98,253 +104,505 @@ body.post-style-y2kfull #article-container {
   background: transparent !important;
 }
 
-/* 专题页保留一个「返回首页」的小入口（藏掉主题 header 后唯一导航） */
-body.post-style-y2kfull #nav {
-  display: none !important;
-}
-
 .y2k-wrap {
+  /* 做旧变量：0~1，由控制台写入；这里给默认「怀旧档」 */
+  --age-sepia: .38;
+  --age-grain: .46;
+  --age-fade: .34;
+  --age-haze: .30;
+  --age-scan: .32;
   position: relative;
   min-height: 100vh;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 50% -10%, rgba(123, 97, 255, .35), transparent 55%),
-    linear-gradient(180deg, #1a0b3a 0%, #0b0618 70%);
-  color: #eafaff;
-  font-family: "Tahoma", "Microsoft YaHei", sans-serif;
-  padding: 46px 16px 40px;
   box-sizing: border-box;
+  padding: 30px 14px 46px;
+  color: #3b463f;
+  font-family: "Tahoma", "SimSun", "Microsoft YaHei", sans-serif;
+  background:
+    radial-gradient(ellipse at 18% 8%, rgba(122, 176, 168, .42), transparent 52%),
+    radial-gradient(ellipse at 84% 62%, rgba(214, 186, 134, .38), transparent 55%),
+    linear-gradient(180deg, #eae5d2 0%, #d9dfd2 55%, #cfd6c8 100%);
+  filter: sepia(var(--age-sepia))
+          saturate(calc(1 - var(--age-fade) * .8))
+          contrast(calc(1 - var(--age-fade) * .22));
 }
 
-/* CRT 扫描线 + 轻微噪点纹理（纯 CSS，不引图片） */
-.y2k-crt {
+/* 做旧叠层：颗粒 / 扫描线 / 柔光 / 划痕 / 暗角 */
+.y2k-grain, .y2k-crt, .y2k-haze, .y2k-scratches {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  z-index: 3;
-  background: repeating-linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, .16) 0px,
-      rgba(0, 0, 0, .16) 1px,
-      transparent 1px,
-      transparent 3px
-    );
 }
-.y2k-crt::before {
+.y2k-grain {
+  z-index: 2;
+  opacity: var(--age-grain);
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+}
+.y2k-crt {
+  z-index: 3;
+  opacity: var(--age-scan);
+  background: repeating-linear-gradient(to bottom,
+      rgba(30, 40, 35, .16) 0px, rgba(30, 40, 35, .16) 1px,
+      transparent 1px, transparent 3px);
+}
+.y2k-crt::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at center, transparent 45%, rgba(0, 0, 0, .55) 100%);
+  background: radial-gradient(ellipse at center, transparent 52%, rgba(60, 55, 40, .38) 100%);
+}
+.y2k-haze {
+  z-index: 1;
+  opacity: var(--age-haze);
+  background:
+    radial-gradient(ellipse at 50% 22%, rgba(255, 251, 226, .95), transparent 68%),
+    linear-gradient(180deg, rgba(255, 248, 220, .5), transparent 60%);
+}
+.y2k-scratches {
+  z-index: 3;
+  opacity: .3;
+  background: repeating-linear-gradient(101deg,
+      transparent 0 71px, rgba(255, 255, 255, .5) 71px 72px,
+      transparent 72px 163px, rgba(255, 255, 255, .32) 163px 164px,
+      transparent 164px 260px);
 }
 
 .y2k-inner {
   position: relative;
   z-index: 4;
-  width: min(720px, 100%);
+  width: min(920px, 100%);
   margin: 0 auto;
 }
 
-.y2k-header {
-  text-align: center;
-  margin-bottom: 26px;
-}
-.y2k-back {
-  display: inline-block;
-  margin-bottom: 16px;
-  padding: 5px 12px;
-  font-family: "Tahoma", "Microsoft YaHei", sans-serif;
-  font-size: 12px;
-  color: #111;
-  text-decoration: none;
-  background: #c0c0c0;
-  border-top: 2px solid #fff;
-  border-left: 2px solid #fff;
-  border-right: 2px solid #404040;
-  border-bottom: 2px solid #404040;
-}
-.y2k-back:hover {
-  background: #e8e8ff;
-  color: #000080;
-}
-.y2k-back:active {
-  border-color: #404040 #fff #fff #404040;
-}
-.y2k-sub {
-  font-size: 12px;
-  letter-spacing: .42em;
-  color: #4deeea;
-  text-shadow: 0 0 8px rgba(77, 238, 234, .8);
-  text-transform: uppercase;
-}
-.y2k-sub-bottom {
-  color: #ff6ec4;
-  text-shadow: 0 0 8px rgba(255, 110, 196, .8);
-  margin-top: 6px;
-}
-.y2k-title {
-  position: relative;
-  display: inline-block;
-  margin: 10px 0 4px;
-  font-size: clamp(34px, 9vw, 64px);
-  font-weight: 900;
-  letter-spacing: .06em;
-  color: #fff;
-  white-space: nowrap;
-  text-shadow:
-    0 0 6px #fff,
-    0 0 14px #ff3bc4,
-    0 0 28px #7b61ff,
-    0 0 48px #4deeea;
-  animation: y2kFlicker 6s infinite;
-}
-@keyframes y2kFlicker {
-  0%, 92%, 96%, 100% { opacity: 1; }
-  94% { opacity: .72; }
-  98% { opacity: .85; }
-}
-
-/* Win98 窗口 */
-.y2k-window {
-  background: #c0c0c0;
+/* ---------- 老式浏览器窗口 ---------- */
+.y2k-browser {
+  background: #c9c6b8;
   border-top: 3px solid #fff;
   border-left: 3px solid #fff;
-  border-right: 3px solid #404040;
-  border-bottom: 3px solid #404040;
-  box-shadow: 6px 6px 0 rgba(0, 0, 0, .45);
-  color: #111;
+  border-right: 3px solid #6b6a5e;
+  border-bottom: 3px solid #6b6a5e;
+  box-shadow: 5px 5px 0 rgba(70, 66, 50, .3);
+  font-size: 12px;
 }
-.y2k-titlebar {
+.y2k-browser-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: 5px 8px;
-  background: linear-gradient(90deg, #000080 0%, #1084d0 100%);
+  padding: 5px 7px;
+  background: linear-gradient(90deg, #103f8e 0%, #2a7fb8 100%);
   color: #fff;
   font-weight: bold;
-  font-size: 14px;
 }
-.y2k-btns {
-  display: inline-flex;
-  gap: 4px;
-  flex: none;
-}
-.y2k-btns i {
-  display: inline-block;
-  width: 18px;
-  height: 17px;
-  line-height: 15px;
-  text-align: center;
-  font-style: normal;
-  font-size: 12px;
-  color: #111;
-  background: #c0c0c0;
-  border-top: 2px solid #fff;
-  border-left: 2px solid #fff;
-  border-right: 2px solid #404040;
-  border-bottom: 2px solid #404040;
-}
-.y2k-window-body {
-  padding: 18px 16px 20px;
-  background: #c0c0c0;
-}
-.y2k-greeting {
-  margin: 0 0 14px;
-  font-size: 14px;
-  line-height: 1.7;
-}
-.y2k-greeting b {
-  color: #000080;
-  font-size: 18px;
-}
-.y2k-tip {
-  color: #444;
-  font-size: 13px;
-}
-
-/* 文章列表 */
-.y2k-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.y2k-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  background: #dcdcdc;
-  border-top: 2px solid #fff;
-  border-left: 2px solid #fff;
-  border-right: 2px solid #808080;
-  border-bottom: 2px solid #808080;
-  color: #111 !important;
-  text-decoration: none !important;
-  transition: background .15s, transform .1s;
-}
-.y2k-item:hover {
-  background: #e8e8ff;
-  transform: translate(-1px, -1px);
-}
-.y2k-item:active {
-  border-color: #808080 #fff #fff #808080;
-  transform: translate(1px, 1px);
-}
-.y2k-item-no {
-  flex: none;
-  width: 30px;
-  text-align: center;
-  font-family: "Courier New", monospace;
-  font-weight: bold;
-  color: #000080;
-  font-size: 15px;
-}
-.y2k-item-main {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-.y2k-item-title {
-  font-weight: bold;
-  font-size: 15px;
+.y2k-browser-title {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.y2k-item-meta {
-  font-family: "Courier New", monospace;
-  font-size: 11px;
-  color: #666;
+.y2k-btns { display: inline-flex; gap: 4px; flex: none; }
+.y2k-btns i {
+  display: inline-block;
+  width: 18px; height: 17px;
+  line-height: 15px; text-align: center;
+  font-style: normal; font-size: 12px; color: #222;
+  background: #c9c6b8;
+  border-top: 2px solid #fff;
+  border-left: 2px solid #fff;
+  border-right: 2px solid #666;
+  border-bottom: 2px solid #666;
 }
-.y2k-lock {
-  margin-left: 6px;
-  font-size: 11px;
-  color: #a00;
-  font-weight: normal;
+.y2k-browser-menu { padding: 5px 9px; border-bottom: 1px solid #a8a597; }
+.y2k-browser-url {
+  display: flex; align-items: center; gap: 7px;
+  padding: 6px 9px;
+  border-top: 1px solid #fff;
 }
-.y2k-item-go {
-  flex: none;
-  font-size: 12px;
-  color: #000080;
+.y2k-browser-url input {
+  flex: 1; min-width: 0;
+  height: 22px; padding: 0 7px;
+  font-family: "Courier New", monospace; font-size: 12px;
+  color: #234; background: #fbf9ef;
+  border-top: 2px solid #8a887b;
+  border-left: 2px solid #8a887b;
+  border-right: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+}
+.y2k-browser-url button {
+  flex: none; padding: 2px 10px; font-size: 12px; color: #222;
+  background: #c9c6b8;
+  border-top: 2px solid #fff; border-left: 2px solid #fff;
+  border-right: 2px solid #666; border-bottom: 2px solid #666;
 }
 
-.y2k-footer {
-  margin-top: 22px;
-  text-align: center;
-  font-family: "Courier New", monospace;
-  font-size: 11px;
-  letter-spacing: .1em;
-  color: #7b61ff;
-  text-shadow: 0 0 8px rgba(123, 97, 255, .7);
+/* ---------- 跑马灯 ---------- */
+.y2k-marquee {
+  margin: 14px 0 20px;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 7px 0;
+  color: #1c4a80;
+  font-size: 13px;
+  letter-spacing: .08em;
+  background: #e6e1cb;
+  border-top: 2px solid #fff;
+  border-bottom: 2px solid #a8a390;
 }
+.y2k-marquee span {
+  display: inline-block;
+  padding-left: 100%;
+  animation: y2kScroll 26s linear infinite;
+}
+@keyframes y2kScroll { to { transform: translateX(-100%); } }
+
+/* ---------- 页头 ---------- */
+.y2k-header { text-align: center; margin-bottom: 18px; }
+.y2k-back {
+  display: inline-block; margin-bottom: 12px; padding: 5px 12px;
+  font-size: 12px; color: #234; text-decoration: none;
+  background: #c9c6b8;
+  border-top: 2px solid #fff; border-left: 2px solid #fff;
+  border-right: 2px solid #666; border-bottom: 2px solid #666;
+}
+.y2k-back:hover { background: #eae6d2; color: #103f8e; }
+.y2k-clock {
+  font-family: "Courier New", monospace; font-size: 12px; color: #5d6b62;
+  letter-spacing: .1em;
+}
+.y2k-title {
+  margin: 12px 0 6px;
+  font-size: clamp(26px, 6vw, 46px);
+  font-weight: 900;
+  letter-spacing: .04em;
+  color: #2f5148;
+  text-shadow: 2px 2px 0 rgba(255, 255, 255, .8), 0 0 22px rgba(120, 180, 170, .5);
+}
+.y2k-lead {
+  margin: 0; font-family: "KaiTi", "STKaiti", "SimSun", serif;
+  font-size: 17px; color: #6b6350;
+}
+.y2k-sparkles { margin-top: 8px; font-size: 15px; color: #d4869f; letter-spacing: .5em; }
+.y2k-sparkles i { font-style: normal; animation: y2kBlink 2.4s infinite; }
+.y2k-sparkles i:nth-child(2) { animation-delay: .4s; color: #6fa8bd; }
+.y2k-sparkles i:nth-child(3) { animation-delay: .8s; }
+.y2k-sparkles i:nth-child(4) { animation-delay: 1.2s; color: #d8b45e; }
+.y2k-sparkles i:nth-child(5) { animation-delay: 1.6s; }
+@keyframes y2kBlink { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
+
+/* ---------- 状态条 ---------- */
+.y2k-statusbar {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 16px;
+  margin-bottom: 22px; font-size: 11px; color: #4a574e;
+  font-family: "Courier New", "SimSun", monospace;
+}
+.y2k-statusbar span {
+  padding: 3px 9px; background: rgba(255, 253, 240, .7);
+  border: 1px solid #b9b5a2;
+}
+.y2k-counter b { color: #b4451c; letter-spacing: .12em; }
+.y2k-online { color: #2c6b4f; }
+
+/* ---------- Win98 窗口 ---------- */
+.y2k-window {
+  margin-bottom: 24px;
+  background: #c9c6b8;
+  border-top: 3px solid #fff;
+  border-left: 3px solid #fff;
+  border-right: 3px solid #6b6a5e;
+  border-bottom: 3px solid #6b6a5e;
+  box-shadow: 6px 6px 0 rgba(70, 66, 50, .3);
+  color: #2b332d;
+}
+.y2k-titlebar {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 5px 8px;
+  background: linear-gradient(90deg, #103f8e 0%, #2a7fb8 100%);
+  color: #fff; font-weight: bold; font-size: 13px;
+}
+.y2k-window-body { padding: 18px 16px 20px; background: #c9c6b8; }
+.y2k-tip {
+  margin: 16px 0 0; padding-top: 12px;
+  border-top: 1px dashed #9d9a88;
+  font-size: 12px; color: #5f6a60; line-height: 1.7;
+}
+.y2k-tip code, .y2k-empty code {
+  font-family: "Courier New", monospace; background: #e9e5d2;
+  padding: 1px 5px; border: 1px solid #b3af9c;
+}
+.y2k-empty { margin: 0; font-size: 14px; line-height: 1.8; }
+
+/* ---------- 宝丽来照片墙 ---------- */
+.y2k-photos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 30px 26px;
+  padding: 8px 4px 4px;
+}
+.y2k-photo {
+  position: relative;
+  margin: 0;
+  padding: 12px 12px 46px;
+  background: #fbf7e9;
+  box-shadow: 0 7px 20px rgba(60, 52, 34, .3), inset 0 0 0 1px rgba(0, 0, 0, .05);
+  transform: rotate(var(--tilt, 0deg));
+  transition: transform .35s ease, box-shadow .35s ease;
+}
+.y2k-photo:hover {
+  transform: rotate(0deg) translateY(-6px) scale(1.02);
+  box-shadow: 0 14px 30px rgba(60, 52, 34, .38);
+  z-index: 6;
+}
+.y2k-tape {
+  position: absolute; top: -11px; left: 50%;
+  width: 90px; height: 25px;
+  transform: translateX(-50%) rotate(-3deg);
+  background: rgba(224, 210, 164, .72);
+  border-left: 1px dashed rgba(255, 255, 255, .5);
+  border-right: 1px dashed rgba(255, 255, 255, .5);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .12);
+  z-index: 2;
+}
+.y2k-photo-frame { position: relative; display: block; }
+.y2k-photo img {
+  display: block; width: 100%; aspect-ratio: 1 / 1;
+  object-fit: cover; background: #d6d0ba;
+}
+.y2k-stamp {
+  position: absolute; right: 8px; bottom: 8px;
+  font-family: "Courier New", monospace; font-size: 13px; font-weight: bold;
+  letter-spacing: .06em; color: #ff7a2f;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, .55), 0 0 6px rgba(255, 120, 40, .7);
+}
+.y2k-photo figcaption {
+  position: absolute; left: 10px; right: 10px; bottom: 12px;
+  text-align: center; font-family: "KaiTi", "STKaiti", "SimSun", serif;
+  font-size: 15px; color: #5c513c;
+}
+
+/* ---------- 记忆陈列柜 ---------- */
+.y2k-trinkets {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 12px;
+}
+.y2k-trinket {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 5px; padding: 14px 10px 13px;
+  text-align: center;
+  background: #e5e1ce;
+  border-top: 2px solid #fff;
+  border-left: 2px solid #fff;
+  border-right: 2px solid #a3a08d;
+  border-bottom: 2px solid #a3a08d;
+  transition: background .2s;
+}
+.y2k-trinket:hover { background: #f0ecd8; }
+.y2k-trinket-title { font-size: 13px; font-weight: bold; color: #2f5148; }
+.y2k-trinket-line {
+  font-family: "KaiTi", "STKaiti", "SimSun", serif;
+  font-size: 12px; color: #726a56; line-height: 1.5;
+}
+.y2k-ico {
+  position: relative; display: block;
+  width: 46px; height: 40px; margin-bottom: 4px;
+}
+/* 鞋套 */
+.ico-shoe {
+  background: linear-gradient(160deg, #e9f2ea, #b9d2c9);
+  border: 2px solid #6f8d83; border-radius: 20px 20px 8px 8px;
+}
+.ico-shoe::after {
+  content: ''; position: absolute; left: 8px; right: 8px; bottom: 4px;
+  height: 3px; background: #6f8d83; border-radius: 3px;
+}
+/* 磁带 */
+.ico-tape {
+  background: #4a4f52; border: 2px solid #2c3033; border-radius: 4px;
+}
+.ico-tape::before, .ico-tape::after {
+  content: ''; position: absolute; top: 9px; width: 11px; height: 11px;
+  border-radius: 50%; background: #ded7bd; border: 2px solid #7c7a68;
+}
+.ico-tape::before { left: 5px; } .ico-tape::after { right: 5px; }
+/* 软盘 */
+.ico-floppy {
+  background: #37414a; border: 2px solid #212a31; border-radius: 3px;
+}
+.ico-floppy::before {
+  content: ''; position: absolute; top: 3px; left: 13px; right: 13px;
+  height: 12px; background: #c9c4b2; border: 1px solid #8a8778;
+}
+.ico-floppy::after {
+  content: ''; position: absolute; bottom: 3px; left: 9px; right: 9px;
+  height: 11px; background: #eae5d0;
+}
+/* 大头贴四格 */
+.ico-sticker {
+  width: 42px; background: #f3ead2; border: 2px solid #c9a87c; padding: 3px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 3px;
+  background-clip: content-box;
+}
+.ico-sticker::before, .ico-sticker::after {
+  content: ''; background: linear-gradient(140deg, #8fb8b0, #d4b7a0);
+}
+/* QQ 气泡 */
+.ico-qq {
+  width: 44px; height: 32px; margin-top: 5px;
+  background: #eaf4f6; border: 2px solid #6f9ba6; border-radius: 16px;
+}
+.ico-qq::after {
+  content: ''; position: absolute; left: 9px; bottom: -7px;
+  border: 7px solid transparent; border-top-color: #6f9ba6; border-bottom: 0;
+}
+/* 手柄 */
+.ico-pad {
+  width: 50px; height: 28px; margin-top: 7px;
+  background: #b9b2a0; border: 2px solid #7c7768; border-radius: 14px;
+}
+.ico-pad::before {
+  content: '+'; position: absolute; left: 6px; top: 3px;
+  font: bold 20px/22px "Courier New", monospace; color: #4a4a40;
+}
+.ico-pad::after {
+  content: '● ●'; position: absolute; right: 5px; top: 4px;
+  font-size: 11px; color: #a8553f; letter-spacing: 1px;
+}
+/* 蓝玻璃窗 */
+.ico-glass {
+  background: linear-gradient(150deg, #9fd3d6, #4f8fa0 55%, #bfe0cf);
+  border: 3px solid #e8e6d5;
+}
+.ico-glass::before, .ico-glass::after {
+  content: ''; position: absolute; background: #e8e6d5;
+}
+.ico-glass::before { left: 50%; top: 0; bottom: 0; width: 3px; margin-left: -1.5px; }
+.ico-glass::after { top: 50%; left: 0; right: 0; height: 3px; margin-top: -1.5px; }
+/* 绿墙裙 */
+.ico-wall { background: linear-gradient(180deg, #f2efdf 0 52%, #6f9b86 52% 100%); border: 2px solid #b9b5a2; }
+.ico-wall::after { content: ''; position: absolute; left: 0; right: 0; top: 52%; height: 2px; background: #4d6f60; }
+/* 摇摇车 */
+.ico-rocker { background: transparent; border: 0; }
+.ico-rocker::before {
+  content: ''; position: absolute; left: 5px; top: 4px;
+  width: 32px; height: 20px; border-radius: 16px 16px 4px 4px;
+  background: linear-gradient(160deg, #e8c877, #c98f5e); border: 2px solid #8a6a45;
+}
+.ico-rocker::after {
+  content: ''; position: absolute; left: 2px; bottom: 3px;
+  width: 42px; height: 9px; border-radius: 50%;
+  background: #7fa79b; border: 2px solid #4f7268;
+}
+/* 拨号 */
+.ico-dial { background: transparent; border: 0; }
+.ico-dial::before {
+  content: ''; position: absolute; left: 3px; top: 8px;
+  width: 36px; height: 24px; border-radius: 5px;
+  background: #d8d3bd; border: 2px solid #8a8778;
+}
+.ico-dial::after {
+  content: '● ● ●'; position: absolute; left: 8px; top: 14px;
+  font-size: 9px; letter-spacing: 2px; color: #4d7a6a;
+}
+/* 同学录 */
+.ico-book {
+  background: #f3ead2; border: 2px solid #b08a63; border-radius: 2px;
+  box-shadow: 3px 3px 0 #c9b493;
+}
+.ico-book::before { content: ''; position: absolute; left: 4px; top: 0; bottom: 0; width: 3px; background: #b08a63; }
+.ico-book::after { content: '勿'; position: absolute; right: 7px; top: 8px; font-family: "KaiTi", serif; font-size: 17px; color: #a56a4a; }
+/* 电视雪花 */
+.ico-tv {
+  width: 48px; height: 36px; margin-top: 3px;
+  background: repeating-linear-gradient(0deg, #6b736b 0 2px, #aeb6ac 2px 4px);
+  border: 3px solid #b9b2a0; border-radius: 6px;
+  animation: y2kSnow 1.6s steps(3) infinite;
+}
+.ico-tv::after {
+  content: ''; position: absolute; right: -9px; top: 8px;
+  width: 6px; height: 6px; border-radius: 50%; background: #8a8778;
+}
+@keyframes y2kSnow { 50% { background-position: 0 3px; } }
+
+/* ---------- 留言板 ---------- */
+.y2k-msg {
+  margin-bottom: 10px; padding: 9px 12px;
+  background: #eae6d3;
+  border-left: 3px solid #6f9b86;
+  font-size: 13px; line-height: 1.7;
+}
+.y2k-msg b { color: #1c4a80; }
+.y2k-msg span { margin-left: 10px; font-family: "Courier New", monospace; font-size: 11px; color: #7d7866; }
+.y2k-msg p { margin: 4px 0 0; font-family: "KaiTi", "STKaiti", "SimSun", serif; color: #4c554c; }
+.y2k-msg-last { border-left-color: #b47a55; }
+.y2k-sign {
+  margin-top: 14px; padding: 9px; text-align: center;
+  color: #f4f0dc; font-size: 12px; letter-spacing: .12em;
+  background: linear-gradient(90deg,
+    #c8c8c8 0 14%, #c8c82e 14% 28%, #28c8c8 28% 42%, #28c828 42% 56%,
+    #c828c8 56% 70%, #c82828 70% 84%, #2828c8 84% 100%);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, .8);
+}
+
+/* ---------- 页脚 ---------- */
+.y2k-footer {
+  margin-top: 8px; text-align: center; line-height: 2;
+  font-family: "Courier New", "SimSun", monospace;
+  font-size: 11px; color: #5f6b60;
+}
+.y2k-footer-stars { margin-top: 6px; color: #b47a55; letter-spacing: .35em; }
+
+/* ==================================================================
+ * 手动做旧控制台（由 y2k-aging.js 注入到 body，不受上面滤镜影响）
+ * ================================================================== */
+.y2k-aging {
+  position: fixed; right: 16px; bottom: 16px; z-index: 9999;
+  font-family: "Tahoma", "Microsoft YaHei", sans-serif;
+}
+.y2k-aging-toggle {
+  padding: 8px 14px; font-size: 13px; font-weight: bold; color: #fff;
+  background: linear-gradient(90deg, #103f8e, #2a7fb8);
+  border-top: 2px solid #6da7d8; border-left: 2px solid #6da7d8;
+  border-right: 2px solid #10315f; border-bottom: 2px solid #10315f;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, .3);
+  cursor: pointer;
+}
+.y2k-aging-toggle:active { transform: translate(1px, 1px); }
+.y2k-aging-panel {
+  position: absolute; right: 0; bottom: 44px;
+  width: 254px; margin: 0;
+  box-shadow: 7px 7px 0 rgba(30, 30, 20, .35);
+}
+.y2k-aging-panel .y2k-window-body { padding: 12px 13px 14px; }
+.y2k-aging-panel label {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 9px; font-size: 12px; color: #2b332d;
+}
+.y2k-aging-panel label > input[type="range"] { flex: 1; min-width: 0; height: 16px; accent-color: #103f8e; }
+.y2k-aging-panel output {
+  flex: none; width: 32px; text-align: right;
+  font-family: "Courier New", monospace; font-size: 11px; color: #1c4a80;
+}
+.y2k-aging-btns { display: flex; gap: 6px; margin-top: 12px; }
+.y2k-aging-btns button {
+  flex: 1; padding: 5px 0; font-size: 11px; color: #222;
+  background: #dcd8c6;
+  border-top: 2px solid #fff; border-left: 2px solid #fff;
+  border-right: 2px solid #666; border-bottom: 2px solid #666;
+  cursor: pointer;
+}
+.y2k-aging-btns button:active { border-color: #666 #fff #fff #666; }
+.y2k-aging-note { margin: 10px 0 0; font-size: 11px; line-height: 1.6; color: #6a6c5e; }
 
 @media screen and (max-width: 768px) {
-  body.post-style-y2kfull .y2k-wrap {
-    padding: 26px 12px 30px;
-  }
-  .y2k-title { font-size: clamp(30px, 11vw, 48px); }
-  .y2k-item-go { display: none; }
-  .y2k-item-title { font-size: 14px; }
+  .y2k-wrap { padding: 18px 10px 34px; }
+  .y2k-photos { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 12px; }
+  .y2k-photo { padding: 9px 9px 40px; }
+  .y2k-photo figcaption { font-size: 13px; bottom: 10px; }
+  .y2k-stamp { font-size: 11px; }
+  .y2k-trinkets { grid-template-columns: repeat(2, 1fr); gap: 9px; }
+  .y2k-title { font-size: clamp(24px, 8vw, 34px); }
+  .y2k-statusbar { gap: 6px 8px; font-size: 10px; }
+  .y2k-browser-menu { display: none; }
+  .y2k-aging { right: 10px; bottom: 10px; }
+  .y2k-aging-panel { width: min(254px, calc(100vw - 20px)); }
 }
