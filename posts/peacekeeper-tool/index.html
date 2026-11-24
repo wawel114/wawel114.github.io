@@ -1,0 +1,312 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>PeacekeeperTool：战地1维和者彩蛋解密工具推荐 | wawel</title><meta name="author" content="wawel"><meta name="copyright" content="wawel"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="一个面向《战地1》“维和者（Peacekeeper）”彩蛋解锁流程的开源解密辅助工具，集成了步骤指引、摩斯电码识别与多种谜题解密功能。  基本信息   项目 说明    软件名称 PeacekeeperTool（战地一维和者菜单解密工具）   项目仓库 FlipFlopszzz&#x2F;PeacekeeperTool   作者 FlipFlopszzz   许可证 GPL-3.0（开源免费）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PeacekeeperTool：战地1维和者彩蛋解密工具推荐">
+<meta property="og:url" content="https://wawel114.github.io/posts/peacekeeper-tool/index.html">
+<meta property="og:site_name" content="wawel">
+<meta property="og:description" content="一个面向《战地1》“维和者（Peacekeeper）”彩蛋解锁流程的开源解密辅助工具，集成了步骤指引、摩斯电码识别与多种谜题解密功能。  基本信息   项目 说明    软件名称 PeacekeeperTool（战地一维和者菜单解密工具）   项目仓库 FlipFlopszzz&#x2F;PeacekeeperTool   作者 FlipFlopszzz   许可证 GPL-3.0（开源免费）">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://wawel114.github.io/img/avatar.jpg">
+<meta property="article:published_time" content="2026-11-25T12:00:00.000Z">
+<meta property="article:modified_time" content="2026-11-24T17:06:02.847Z">
+<meta property="article:author" content="wawel">
+<meta property="article:tag" content="战地1">
+<meta property="article:tag" content="BF1">
+<meta property="article:tag" content="维和者">
+<meta property="article:tag" content="彩蛋">
+<meta property="article:tag" content="工具">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://wawel114.github.io/img/avatar.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "PeacekeeperTool：战地1维和者彩蛋解密工具推荐",
+  "url": "https://wawel114.github.io/posts/peacekeeper-tool/",
+  "image": "https://wawel114.github.io/img/avatar.jpg",
+  "datePublished": "2026-11-25T12:00:00.000Z",
+  "dateModified": "2026-11-24T17:06:02.847Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "wawel",
+      "url": "https://wawel114.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/favicon.png"><link rel="canonical" href="https://wawel114.github.io/posts/peacekeeper-tool/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.2"><link rel="stylesheet" href="/lib/fontawesome/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        try {
+          const data = { value }
+
+          if (ttl != null) {
+            data.expiry = Date.now() + ttl * 86400000
+          }
+
+          localStorage.setItem(key, JSON.stringify(data))
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', 'undefined')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', 'undefined')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          const mediaQueryDark = window.matchMedia('(prefers-color-scheme: dark)')
+          const mediaQueryLight = window.matchMedia('(prefers-color-scheme: light)')
+
+          if (theme === undefined) {
+            if (mediaQueryLight.matches) activateLightMode()
+            else if (mediaQueryDark.matches) activateDarkMode()
+            else {
+              const hour = new Date().getHours()
+              const start = 6
+              const end = 18
+              const isNight =
+                start < end
+                    ? hour < start || hour >= end
+                    : hour >= start || hour < end
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            mediaQueryDark.addEventListener('change', e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else {
+            theme === 'light' ? activateLightMode() : activateDarkMode()
+          }
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.json","preload":true,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'PeacekeeperTool：战地1维和者彩蛋解密工具推荐',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css?v=f6ad702f94"><link rel="stylesheet" href="/css/y2k.css?v=b9eddcfac3"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar" loading='lazy'/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">8</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/changelog/"><i class="fa-fw fas fa-clipboard-list"></i><span> 更新日志</span></a></div><div class="menus_item"><a class="site-page" href="/y2k/"><i class="fa-fw fas fa-window-maximize"></i><span> 千禧年</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/banner.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">wawel</span></a><a class="nav-page-title" href="/"><span class="site-name">PeacekeeperTool：战地1维和者彩蛋解密工具推荐</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/changelog/"><i class="fa-fw fas fa-clipboard-list"></i><span> 更新日志</span></a></div><div class="menus_item"><a class="site-page" href="/y2k/"><i class="fa-fw fas fa-window-maximize"></i><span> 千禧年</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">PeacekeeperTool：战地1维和者彩蛋解密工具推荐</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-11-25T12:00:00.000Z" title="发表于 2026-11-25 20:00:00">2026-11-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-11-24T17:06:02.847Z" title="更新于 2026-11-25 01:06:02">2026-11-25</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%8E%A8%E8%8D%90%E8%BD%AF%E4%BB%B6/">推荐软件</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><blockquote>
+<p>一个面向《战地1》“维和者（Peacekeeper）”彩蛋解锁流程的开源解密辅助工具，集成了步骤指引、摩斯电码识别与多种谜题解密功能。</p>
+</blockquote>
+<h2 id="基本信息"><a href="#基本信息" class="headerlink" title="基本信息"></a>基本信息</h2><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>软件名称</td>
+<td>PeacekeeperTool（战地一维和者菜单解密工具）</td>
+</tr>
+<tr>
+<td>项目仓库</td>
+<td><a target="_blank" rel="noopener" href="https://github.com/FlipFlopszzz/PeacekeeperTool">FlipFlopszzz&#x2F;PeacekeeperTool</a></td>
+</tr>
+<tr>
+<td>作者</td>
+<td><a target="_blank" rel="noopener" href="https://github.com/FlipFlopszzz">FlipFlopszzz</a></td>
+</tr>
+<tr>
+<td>许可证</td>
+<td><a target="_blank" rel="noopener" href="https://github.com/FlipFlopszzz/PeacekeeperTool/blob/master/LICENSE">GPL-3.0</a>（开源免费）</td>
+</tr>
+<tr>
+<td>当前版本</td>
+<td>v1.6（2025-05-29 发布）</td>
+</tr>
+<tr>
+<td>平台</td>
+<td>Windows（作者说明：面向并测试于 Windows 11，Steam 绑定 EA 平台的《战地1》）</td>
+</tr>
+<tr>
+<td>技术栈</td>
+<td>Python 3.13 + PySide6，PyInstaller 打包，Inno Setup 制作安装包</td>
+</tr>
+<tr>
+<td>官方更新</td>
+<td>不由本站跟进，请以 GitHub 仓库&#x2F;Release 为准</td>
+</tr>
+</tbody></table>
+<h2 id="这是什么工具？"><a href="#这是什么工具？" class="headerlink" title="这是什么工具？"></a>这是什么工具？</h2><p><strong>PeacekeeperTool</strong> 是一个用于简化《战地1》维和者彩蛋获取过程的桌面工具。根据项目 README，它的定位是“维和者菜单解密工具”，主要帮助玩家处理彩蛋流程中的指引、录音、摩斯电码识别和密文&#x2F;谜题解密等环节；工具本身不包含彩蛋背后故事内容。</p>
+<p>如果你了解《战地1》的维和者彩蛋，就会知道它流程长、步骤多，中间还会涉及摩斯电码、密码&#x2F;谜题解密等环节。这个工具的价值就在于把这些比较繁琐的部分整合到一个界面里，减少来回查网站、手动翻译和反复试错的成本。</p>
+<h2 id="主要功能"><a href="#主要功能" class="headerlink" title="主要功能"></a>主要功能</h2><ul>
+<li><strong>彩蛋过程指引</strong>：按流程提供解谜步骤提示。</li>
+<li><strong>音频录制</strong>：可在工具内录制相关音频。</li>
+<li><strong>摩斯电码自动识别</strong>：根据录制音频自动识别&#x2F;解密摩斯电码。</li>
+<li><strong>多种密文和谜题解密器</strong>：集成彩蛋过程中涉及的多种解密能力。</li>
+<li><strong>资源汇总</strong>：作者在 README 中提到，将部分常用资源、网站和功能做了整合，方便访问和使用。</li>
+</ul>
+<blockquote>
+<p>按作者说明，工具主要简化的是<strong>金银铜牌</strong>和<strong>逐步升级</strong>获取过程中的部分环节，例如摩斯电码自动识别、解密器集成、金牌灯开关序列遍历、银牌点灯解密器与坐标系显示等。</p>
+</blockquote>
+<h2 id="使用前注意"><a href="#使用前注意" class="headerlink" title="使用前注意"></a>使用前注意</h2><ul>
+<li>**准确度不是 100%**：作者说明在其测试的几十段素材（包括逐步升级、铜牌和金牌）中，摩斯电码自动识别准确度在 90% 以上；个别片段可能因识别错误或杂音合并导致结果有偏差，需要结合“查看图像”、上下文或人工判断排除。</li>
+<li><strong>运行环境</strong>：项目说明为面向并测试于 Windows 11 + Steam 绑定 EA 平台的《战地1》。</li>
+<li><strong>反作弊&#x2F;风险说明</strong>：作者在 README 中说明该软件不读取、不修改《战地1》内存，是独立运行的外部程序，测试时未被 EAAC 拦截；但同时也明确表示<strong>不保证 EA 在后续不会禁止本工具</strong>。使用前请自行评估风险。</li>
+<li><strong>界面显示</strong>：如果软件字体偏小，可使用 <code>Ctrl + 鼠标滚轮</code> 调整显示大小。</li>
+<li><strong>免责声明</strong>：项目 README 写明，使用该项目的风险由使用者自行承担；作者及贡献者对使用导致的直接或间接损失不承担责任。</li>
+</ul>
+<h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/FlipFlopszzz/PeacekeeperTool/releases/download/v1.6/PeacekeeperTool-1.6-Setup.exe">PeacekeeperTool v1.6 安装包（官方 GitHub Release，约 82.5 MB）</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/FlipFlopszzz/PeacekeeperTool/releases/tag/v1.6">GitHub Releases 发布页</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/FlipFlopszzz/PeacekeeperTool">项目仓库</a></li>
+</ul>
+<h2 id="参考与来源"><a href="#参考与来源" class="headerlink" title="参考与来源"></a>参考与来源</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/FlipFlopszzz/PeacekeeperTool">PeacekeeperTool GitHub 仓库 &#x2F; README</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/FlipFlopszzz/PeacekeeperTool/releases/tag/v1.6">PeacekeeperTool v1.6 Release</a></li>
+<li><a target="_blank" rel="noopener" href="https://wiki.gamedetectives.net/index.php?title=Battlefield_1">Battlefield 1 彩蛋 Wiki（GameDetectives）</a></li>
+<li><a target="_blank" rel="noopener" href="https://wiki.bfee.co/index.php?title=Battlefield_1/A_Conflict">BFEE Wiki - Battlefield 1 &#x2F; A Conflict</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1MdLRztEEf">作者提供的完整教程（Bilibili，BV1MdLRztEEf）</a></li>
+</ul>
+<blockquote>
+<p>本文仅基于公开资料整理，介绍第三方开源工具。工具功能、兼容性与风险说明请以项目仓库与作者发布内容为准。</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://wawel114.github.io">wawel</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://wawel114.github.io/posts/peacekeeper-tool/">https://wawel114.github.io/posts/peacekeeper-tool/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://wawel114.github.io" target="_blank">wawel</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%88%98%E5%9C%B01/">战地1</a><a class="post-meta__tags" href="/tags/BF1/">BF1</a><a class="post-meta__tags" href="/tags/%E7%BB%B4%E5%92%8C%E8%80%85/">维和者</a><a class="post-meta__tags" href="/tags/%E5%BD%A9%E8%9B%8B/">彩蛋</a><a class="post-meta__tags" href="/tags/%E5%B7%A5%E5%85%B7/">工具</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/posts/p20261124-0834/" title="关于维和者"><img class="cover" src="/images/uploads/p20261124-0834/cover.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post" loading='lazy'><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">关于维和者</div></div><div class="info-2"><div class="info-item-1">关于维和者获得维和者通过大佬提供的工具与B站上各位大佬的教程视频，以及ai的些许帮助，我历时一个通宵加一个下午拿到了战地1的彩蛋武器——维和者  历程出发点当我看到群友试图使用ai识别摩斯电码解彩蛋的时候我也参与帮忙了，但是事后得出结论让ai听摩斯电码就是个错误。之后我忽然想到让ai帮忙收集需要的工具以及教程不就好了，因此我通过ai（opencode）让他帮我把需要的工具以及说明书集合到了一起方便使用，由此我开始了我的解密之旅。 逐步升级在逐步升级之前我已经把简单的野兽之源和看见天使完成了，因此直接跳到逐步升级  要完成逐步升级，需要一个不是暴风雪的天气，最好也不是大晴天因为可能会有鸟叫，实际用下来其实除了暴风雪其他都行，有了工具其实这个并不难，我重复识别了几次确认密码就开始了，之后我却卡在了找房子阶段，不过也就卡了一会，看清记住房子位置之后就是互动环节了，之后也如愿拿到了逐步升级   不祥之兆（金牌）这个我遇到的困难是没记住机制，趴下听到音效就可以开始录音了，我当时还以为不是，重开了几次之后问群主才知道，说是金牌其实这是最简单的摩斯密码彩蛋了 初显身手（铜牌）傻逼铜牌，得听8次...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar" loading='lazy'/></div><div class="author-info-name">wawel</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">8</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/wawel114"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">虽然这里有很多我产出的💩，但还是请不要当公共厕所</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">基本信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%99%E6%98%AF%E4%BB%80%E4%B9%88%E5%B7%A5%E5%85%B7%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">这是什么工具？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E5%8A%9F%E8%83%BD"><span class="toc-number">3.</span> <span class="toc-text">主要功能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%89%8D%E6%B3%A8%E6%84%8F"><span class="toc-number">4.</span> <span class="toc-text">使用前注意</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD"><span class="toc-number">5.</span> <span class="toc-text">下载</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E4%B8%8E%E6%9D%A5%E6%BA%90"><span class="toc-number">6.</span> <span class="toc-text">参考与来源</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/peacekeeper-tool/" title="PeacekeeperTool：战地1维和者彩蛋解密工具推荐">PeacekeeperTool：战地1维和者彩蛋解密工具推荐</a><time datetime="2026-11-25T12:00:00.000Z" title="发表于 2026-11-25 20:00:00">2026-11-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/p20261124-0834/" title="关于维和者"><img src="/images/uploads/p20261124-0834/cover.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="关于维和者" loading='lazy'/></a><div class="content"><a class="title" href="/posts/p20261124-0834/" title="关于维和者">关于维和者</a><time datetime="2026-11-24T00:34:00.000Z" title="发表于 2026-11-24 08:34:00">2026-11-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/candyball-intro/" title="candy ball     一位来自拉脱维亚的绝美coser"><img src="/images/uploads/candyball-intro/cover.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="candy ball     一位来自拉脱维亚的绝美coser" loading='lazy'/></a><div class="content"><a class="title" href="/posts/candyball-intro/" title="candy ball     一位来自拉脱维亚的绝美coser">candy ball     一位来自拉脱维亚的绝美coser</a><time datetime="2026-11-19T11:00:00.000Z" title="发表于 2026-11-19 19:00:00">2026-11-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/p20261119-1344/" title="如何从零开始撸一个自己的网站"><img src="/images/uploads/p20261119-1344/cover.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="如何从零开始撸一个自己的网站" loading='lazy'/></a><div class="content"><a class="title" href="/posts/p20261119-1344/" title="如何从零开始撸一个自己的网站">如何从零开始撸一个自己的网站</a><time datetime="2026-11-19T05:44:37.000Z" title="发表于 2026-11-19 13:44:37">2026-11-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/p20261119-0251/" title="zsbd">zsbd</a><time datetime="2026-11-18T18:51:46.000Z" title="发表于 2026-11-19 02:51:46">2026-11-19</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2026 By wawel</span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.2"></script><script src="/js/main.js?v=5.7.2"></script><div class="js-pjax"></div><script src="/js/mobile-nav-capsules.js?v=ba5b71ba0e"></script><script src="/js/mobile-post-card.js?v=ca5b371865"></script><script src="/js/section-nav.js?v=d5917441dd"></script><script src="/js/mobile-post-cover.js?v=9f01644d9d"></script><script src="/js/y2k-aging.js?v=4b35a8e526"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章 / 工具名" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.7.2"></script></div></div></body></html>
