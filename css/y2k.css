@@ -606,3 +606,329 @@ body.post-style-y2kfull #article-container {
   .y2k-aging { right: 10px; bottom: 10px; }
   .y2k-aging-panel { width: min(254px, calc(100vw - 20px)); }
 }
+
+/* ==================================================================
+ * 皮肤 B：Frutiger Aero（2007 · 那个发亮、冒泡的「未来」）
+ * ------------------------------------------------------------------
+ * 触发条件：html.y2k-skin-aero，由页面首段脚本/控制台写入。
+ * 全部规则以 html.y2k-skin-aero 开头，且只作用于 .y2k-wrap 内的构件；
+ * 其它页面即使误带这个 class 也不会有任何变化。
+ * 两套内容用 [data-skin] 成对渲染，这里只「隐藏另一套」，
+ * 不去改另一套的 display，避免把 grid/flex 布局打乱。
+ * 做旧变量两套共用：Aero 默认「如新」，手动做旧 = 过期的未来。
+ * ================================================================== */
+
+/* 只隐藏另一套，当前套保持它本来的 display */
+html:not(.y2k-skin-aero) .y2k-wrap [data-skin="aero"],
+html.y2k-skin-aero .y2k-wrap [data-skin="dream"] {
+  display: none !important;
+}
+
+/* ---------- 皮肤切换条（两套皮肤共用的底座，Aero 下再覆写） ---------- */
+.y2k-skins {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: 8px; margin: 0 0 14px;
+}
+.y2k-skin-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 6px 15px;
+  font: bold 12px/1.2 "Tahoma", "Microsoft YaHei", sans-serif;
+  color: #234; cursor: pointer;
+  background: #e6e1cb;
+  border-top: 2px solid #fff; border-left: 2px solid #fff;
+  border-right: 2px solid #8a887b; border-bottom: 2px solid #8a887b;
+}
+.y2k-skin-btn[aria-pressed="true"] {
+  background: #d7e6dc; color: #103f8e;
+  box-shadow: inset 0 0 0 1px #6f9b86;
+}
+.y2k-skin-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #6f9b86; flex: none;
+}
+.y2k-skins-hint {
+  font: 11px/1.4 "Courier New", "SimSun", monospace;
+  color: #6b6350; letter-spacing: .04em;
+}
+
+/* ---------- 页面底色与背景（天蓝 → 青绿 → 草坡，带气泡与光晕） ---------- */
+/* 兜底色取渐变末端那种浅绿：wrap 铺满文档，但截图/超滚动时若露出几像素，
+   也不能变成一条突兀的深蓝边 */
+html.y2k-skin-aero body.post-style-y2kfull,
+html.y2k-skin-aero body.post-style-y2kfull #body-wrap {
+  background: #8ad9ae !important;
+}
+html.y2k-skin-aero:has(body.post-style-y2kfull) {
+  background: #8ad9ae !important;
+}
+html.y2k-skin-aero .y2k-wrap {
+  color: #0a3f68;
+  font-family: "Segoe UI", "Microsoft YaHei", "Tahoma", sans-serif;
+  background:
+    radial-gradient(circle at 13% 30%, rgba(255,255,255,.92) 0 3px, rgba(255,255,255,.22) 4px 11px, rgba(255,255,255,.8) 12px 13px, transparent 14px),
+    radial-gradient(circle at 87% 20%, rgba(255,255,255,.85) 0 5px, rgba(255,255,255,.20) 6px 17px, rgba(255,255,255,.7) 18px 19px, transparent 20px),
+    radial-gradient(circle at 76% 56%, rgba(255,255,255,.8) 0 3px, rgba(255,255,255,.18) 4px 10px, rgba(255,255,255,.65) 11px 12px, transparent 13px),
+    radial-gradient(circle at 24% 72%, rgba(255,255,255,.7) 0 4px, rgba(255,255,255,.16) 5px 13px, rgba(255,255,255,.6) 14px 15px, transparent 16px),
+    radial-gradient(circle at 92% 82%, rgba(255,255,255,.75) 0 2px, rgba(255,255,255,.18) 3px 8px, transparent 9px),
+    radial-gradient(ellipse at 20% 6%, rgba(255,255,255,.85), transparent 34%),
+    radial-gradient(ellipse at 82% 4%, rgba(190,245,255,.65), transparent 32%),
+    radial-gradient(ellipse at 50% 108%, rgba(104,224,158,.95), transparent 48%),
+    linear-gradient(180deg, #1184d4 0%, #3cb4ee 30%, #9ee3f8 60%, #e8fbff 80%, #7bd3a4 100%);
+  /* Aero 做旧更像「褪色发白」而不是泛黄，sepia 收敛一些 */
+  filter: sepia(calc(var(--age-sepia) * .55))
+          saturate(calc(1 - var(--age-fade) * .55))
+          contrast(calc(1 - var(--age-fade) * .20))
+          brightness(calc(1 - var(--age-fade) * .12));
+}
+/* 划痕层在 Aero 下改成玻璃斜向反光 */
+html.y2k-skin-aero .y2k-scratches {
+  opacity: .5;
+  background:
+    linear-gradient(115deg, transparent 0 36%, rgba(255,255,255,.22) 41%, transparent 47%),
+    linear-gradient(115deg, transparent 0 67%, rgba(255,255,255,.15) 72%, transparent 78%);
+}
+/* 柔光层在 Aero 下是顶部大面积白色光晕（做旧时才明显） */
+html.y2k-skin-aero .y2k-haze {
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.95), transparent 62%),
+    linear-gradient(180deg, rgba(255,255,255,.55), transparent 55%);
+}
+
+/* ---------- Aero Glass 窗口 / 浏览器 ---------- */
+html.y2k-skin-aero .y2k-window,
+html.y2k-skin-aero .y2k-browser {
+  background: linear-gradient(180deg,
+      rgba(255,255,255,.88) 0%,
+      rgba(228,247,255,.74) 42%,
+      rgba(180,228,250,.72) 100%);
+  border: 1px solid rgba(255,255,255,.9);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0,55,110,.28),
+              inset 0 1px 0 rgba(255,255,255,1),
+              inset 0 0 28px rgba(255,255,255,.4);
+  backdrop-filter: blur(8px) saturate(1.2);
+  -webkit-backdrop-filter: blur(8px) saturate(1.2);
+  overflow: hidden;
+}
+html.y2k-skin-aero .y2k-window-body { background: transparent; }
+html.y2k-skin-aero .y2k-titlebar,
+html.y2k-skin-aero .y2k-browser-bar {
+  background: linear-gradient(180deg, #86d9f8 0%, #35aae9 42%, #0a6cb8 52%, #3faee6 100%);
+  color: #fff;
+  font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+  text-shadow: 0 1px 2px rgba(0,40,85,.7);
+  border-bottom: 1px solid rgba(255,255,255,.6);
+}
+html.y2k-skin-aero .y2k-btns i {
+  width: 20px; height: 18px; line-height: 16px;
+  border-radius: 4px; font-size: 11px; color: #fff;
+  background: linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,.12));
+  border: 1px solid rgba(255,255,255,.78);
+  box-shadow: 0 1px 3px rgba(0,40,85,.35), inset 0 1px 0 rgba(255,255,255,.9);
+}
+html.y2k-skin-aero .y2k-btns i:last-child {
+  background: linear-gradient(180deg, #ff927c, #d63c29);
+}
+html.y2k-skin-aero .y2k-browser-menu {
+  border-bottom: 1px solid rgba(255,255,255,.6); color: #0a3f68;
+}
+html.y2k-skin-aero .y2k-browser-url { border-top: 1px solid rgba(255,255,255,.75); }
+html.y2k-skin-aero .y2k-browser-url input {
+  border-radius: 5px; border: 1px solid rgba(20,110,175,.5);
+  background: rgba(255,255,255,.95); color: #0a3f68;
+  box-shadow: inset 0 1px 3px rgba(0,60,110,.15);
+  font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+}
+html.y2k-skin-aero .y2k-browser-url button {
+  border-radius: 16px; border: 1px solid rgba(255,255,255,.9); color: #083a63;
+  background: linear-gradient(180deg, #fff 0%, #d3f0ff 48%, #86c9ef 52%, #ecfaff 100%);
+  box-shadow: 0 2px 6px rgba(0,60,120,.25), inset 0 1px 0 #fff;
+}
+
+/* ---------- 切换条 / 跑马灯 / 状态条：glossy 胶囊 ---------- */
+html.y2k-skin-aero .y2k-skin-btn {
+  border-radius: 20px; border: 1px solid rgba(255,255,255,.9);
+  color: #083a63;
+  background: linear-gradient(180deg, #fff 0%, #ddf4ff 46%, #9ed6f3 52%, #f2fcff 100%);
+  box-shadow: 0 3px 10px rgba(0,70,130,.28), inset 0 1px 0 #fff;
+}
+html.y2k-skin-aero .y2k-skin-btn[aria-pressed="true"] {
+  color: #fff;
+  background: linear-gradient(180deg, #eaf9ff, #57b6ec 55%, #0b6fb0);
+  text-shadow: 0 1px 2px rgba(0,40,80,.7);
+  box-shadow: 0 0 15px rgba(140,225,255,.95), inset 0 1px 0 rgba(255,255,255,.9);
+}
+html.y2k-skin-aero .y2k-skin-dot { background: radial-gradient(circle at 30% 28%, #fff, #7fd0f5 55%, #0b6fb0); }
+html.y2k-skin-aero .y2k-skins-hint { color: #eaf9ff; text-shadow: 0 1px 3px rgba(0,50,100,.75); }
+html.y2k-skin-aero .y2k-marquee {
+  color: #fff; border-radius: 20px;
+  border: 1px solid rgba(255,255,255,.8);
+  background: linear-gradient(180deg, rgba(70,175,232,.9), rgba(9,102,178,.9));
+  text-shadow: 0 1px 2px rgba(0,40,85,.65);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.6), 0 3px 12px rgba(0,60,120,.25);
+}
+html.y2k-skin-aero .y2k-statusbar span {
+  background: rgba(255,255,255,.75); color: #0a4f86;
+  border: 1px solid rgba(255,255,255,.9); border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0,60,120,.18), inset 0 1px 0 #fff;
+}
+html.y2k-skin-aero .y2k-counter b { color: #0a6fb8; }
+html.y2k-skin-aero .y2k-online { color: #12875b; }
+
+/* ---------- 页头 ---------- */
+html.y2k-skin-aero .y2k-title {
+  color: #fff;
+  text-shadow: 0 2px 10px rgba(0,70,130,.6), 0 0 28px rgba(190,240,255,.95);
+}
+html.y2k-skin-aero .y2k-lead,
+html.y2k-skin-aero .y2k-clock {
+  color: #fff;
+  text-shadow: 0 1px 5px rgba(0,50,100,.85);
+  font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+}
+/* 页脚落在浅绿草坡上，白字会糊掉：改成磨砂玻璃条 + 深蓝字 */
+html.y2k-skin-aero .y2k-footer {
+  margin-top: 16px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.85);
+  background: rgba(255,255,255,.62);
+  color: #0a4f86;
+  text-shadow: 0 1px 0 rgba(255,255,255,.85);
+  font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+  box-shadow: 0 4px 14px rgba(0,60,120,.18), inset 0 1px 0 #fff;
+}
+html.y2k-skin-aero .y2k-back {
+  border-radius: 16px; border: 1px solid rgba(255,255,255,.9); color: #083a63;
+  background: linear-gradient(180deg, #fff, #d3f0ff 48%, #86c9ef 52%, #ecfaff);
+  box-shadow: 0 2px 8px rgba(0,60,120,.25), inset 0 1px 0 #fff;
+}
+html.y2k-skin-aero .y2k-back:hover { color: #fff; background: linear-gradient(180deg, #eaf9ff, #3aa9e2 55%, #0b6fb0); }
+html.y2k-skin-aero .y2k-sparkles { color: #fff; text-shadow: 0 0 12px #fff, 0 0 22px #9fe4ff; }
+html.y2k-skin-aero .y2k-footer-stars { color: #0a6fb8; }
+
+/* ---------- 照片：宝丽来 → 数码相框（不歪、无胶带） ---------- */
+html.y2k-skin-aero .y2k-photo {
+  padding: 9px 9px 42px;
+  transform: none;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,.95);
+  background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(224,245,255,.9));
+  box-shadow: 0 10px 26px rgba(0,60,120,.3), inset 0 1px 0 #fff, 0 0 0 4px rgba(255,255,255,.2);
+}
+html.y2k-skin-aero .y2k-photo:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 18px 34px rgba(0,60,120,.38), inset 0 1px 0 #fff;
+}
+html.y2k-skin-aero .y2k-tape { display: none; }
+html.y2k-skin-aero .y2k-photo-frame {
+  border-radius: 5px; overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(0,60,110,.16);
+}
+html.y2k-skin-aero .y2k-stamp {
+  right: 10px; bottom: 10px;
+  padding: 2px 8px; border-radius: 12px;
+  font-size: 11px; color: #fff;
+  background: rgba(9,102,178,.6);
+  text-shadow: 0 1px 3px rgba(0,40,90,.9);
+}
+html.y2k-skin-aero .y2k-photo figcaption {
+  color: #0a4f86; font-size: 13px;
+  font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+}
+
+/* ---------- 陈列柜：玻璃球图标 ---------- */
+html.y2k-skin-aero .y2k-trinket {
+  border-radius: 12px; border: 1px solid rgba(255,255,255,.9);
+  background: linear-gradient(180deg, rgba(255,255,255,.84), rgba(212,241,255,.72));
+  box-shadow: 0 5px 16px rgba(0,60,120,.2), inset 0 1px 0 #fff;
+}
+html.y2k-skin-aero .y2k-trinket:hover { background: rgba(255,255,255,.96); }
+html.y2k-skin-aero .y2k-trinket-title { color: #0a4f86; }
+html.y2k-skin-aero .y2k-trinket-line {
+  color: #39719a; font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+}
+html.y2k-skin-aero .y2k-trinket .y2k-ico[class*="ico-a-"] {
+  display: grid; place-items: center;
+  width: 48px; height: 48px; margin-bottom: 6px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.9);
+  background:
+    radial-gradient(circle at 30% 22%, rgba(255,255,255,.98) 0 8%, rgba(255,255,255,.35) 20%, transparent 44%),
+    linear-gradient(155deg, #c7f2ff 0%, #5cbdec 42%, #0b6fb8 100%);
+  box-shadow: inset 0 -7px 14px rgba(0,50,110,.35),
+              0 5px 12px rgba(0,70,140,.32),
+              0 0 16px rgba(140,225,255,.65);
+}
+html.y2k-skin-aero .y2k-trinket .y2k-ico[class*="ico-a-"]::after {
+  position: static; width: auto; height: auto; margin: 0;
+  border: 0; border-radius: 0; background: none; box-shadow: none;
+  font: 23px/1 "Segoe UI Symbol", "Microsoft YaHei", sans-serif;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(255,255,255,.95), 0 1px 3px rgba(0,50,110,.85);
+}
+html.y2k-skin-aero .ico-a-vista::after { content: '▤'; }
+html.y2k-skin-aero .ico-a-gadget::after { content: '◷'; }
+html.y2k-skin-aero .ico-a-dock::after { content: '▬'; }
+html.y2k-skin-aero .ico-a-ipod::after { content: '♫'; }
+html.y2k-skin-aero .ico-a-msn::after { content: '✿'; }
+html.y2k-skin-aero .ico-a-earth::after { content: '◉'; }
+html.y2k-skin-aero .ico-a-bubble::after { content: '○'; }
+html.y2k-skin-aero .ico-a-flow::after { content: '◧'; }
+html.y2k-skin-aero .ico-a-flip::after { content: '▯'; }
+html.y2k-skin-aero .ico-a-cam::after { content: '◍'; }
+html.y2k-skin-aero .ico-a-wmp::after { content: '≋'; }
+html.y2k-skin-aero .ico-a-leaf::after { content: '❧'; }
+
+/* ---------- 留言板 / 进度条 / 提示 ---------- */
+html.y2k-skin-aero .y2k-msg {
+  border-radius: 10px; border: 1px solid rgba(255,255,255,.9);
+  border-left: 3px solid #39a9e6;
+  background: linear-gradient(180deg, rgba(255,255,255,.86), rgba(220,244,255,.72));
+  box-shadow: inset 0 1px 0 #fff, 0 3px 10px rgba(0,60,120,.15);
+}
+html.y2k-skin-aero .y2k-msg-last { border-left-color: #6ecb9a; }
+html.y2k-skin-aero .y2k-msg b { color: #0a6fb8; }
+html.y2k-skin-aero .y2k-msg span { color: #5a8bab; }
+html.y2k-skin-aero .y2k-msg p {
+  color: #174f78; font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+}
+html.y2k-skin-aero .y2k-sign {
+  border-radius: 20px; color: #fff;
+  border: 1px solid rgba(255,255,255,.8);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,.08)),
+    repeating-linear-gradient(90deg, #2ba4e6 0 18px, #58c0f0 18px 36px);
+  text-shadow: 0 1px 3px rgba(0,50,100,.8);
+}
+html.y2k-skin-aero .y2k-tip { border-top-color: rgba(255,255,255,.7); color: #1c5f8f; }
+html.y2k-skin-aero .y2k-empty { color: #0a4f86; }
+html.y2k-skin-aero .y2k-tip code,
+html.y2k-skin-aero .y2k-empty code {
+  border-radius: 4px; border: 1px solid rgba(255,255,255,.9);
+  background: rgba(255,255,255,.88); color: #0a4f86;
+}
+
+/* ---------- 做旧控制台跟着换皮（面板本身带 .y2k-window，已自动玻璃化） ---------- */
+html.y2k-skin-aero .y2k-aging-toggle {
+  border-radius: 20px; border: 1px solid rgba(255,255,255,.9); color: #083a63;
+  background: linear-gradient(180deg, #fff, #d3f0ff 48%, #86c9ef 52%, #ecfaff);
+  box-shadow: 0 3px 12px rgba(0,60,120,.35), inset 0 1px 0 #fff;
+}
+html.y2k-skin-aero .y2k-aging-panel label { color: #0a4f86; }
+html.y2k-skin-aero .y2k-aging-panel output { color: #0a6fb8; }
+html.y2k-skin-aero .y2k-aging-btns button {
+  border-radius: 14px; border: 1px solid rgba(255,255,255,.9); color: #083a63;
+  background: linear-gradient(180deg, #fff, #dcf4ff 50%, #a9dcf7);
+}
+html.y2k-skin-aero .y2k-aging-note { color: #2a6189; }
+
+/* ---------- 手机端 ---------- */
+@media screen and (max-width: 768px) {
+  .y2k-skins { gap: 6px; margin-bottom: 12px; }
+  .y2k-skins-hint { display: none; }
+  .y2k-skin-btn { padding: 6px 12px; font-size: 11px; }
+  html.y2k-skin-aero .y2k-photo { padding: 8px 8px 38px; }
+  html.y2k-skin-aero .y2k-photo figcaption { font-size: 12px; bottom: 10px; }
+  html.y2k-skin-aero .y2k-stamp { font-size: 10px; }
+}
