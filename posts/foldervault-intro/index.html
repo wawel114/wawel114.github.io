@@ -1,0 +1,328 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>文件夹保险箱（FolderVault）：给文件夹加一道密码门 | wawel</title><meta name="author" content="wawel"><meta name="copyright" content="wawel"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="一个自写的 Windows 小工具：把文件夹”藏起来”，要用时输密码才打开。零依赖、免安装、可放 U 盘带走。**默认密码是 1111**，下载后建议尽快改成自己的。  先说清楚：它不是加密这点必须放在最前面，免得误解： 它是”访问控制”，不是”文件加密”。 工具做的是把文件夹设为隐藏 + 系统属性，让它从资源管理器里消失；里面的文件本身一个字节都没加密。懂电脑的人关掉”隐藏受保护的操作系统文件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="文件夹保险箱（FolderVault）：给文件夹加一道密码门">
+<meta property="og:url" content="https://wawel114.github.io/posts/foldervault-intro/index.html">
+<meta property="og:site_name" content="wawel">
+<meta property="og:description" content="一个自写的 Windows 小工具：把文件夹”藏起来”，要用时输密码才打开。零依赖、免安装、可放 U 盘带走。**默认密码是 1111**，下载后建议尽快改成自己的。  先说清楚：它不是加密这点必须放在最前面，免得误解： 它是”访问控制”，不是”文件加密”。 工具做的是把文件夹设为隐藏 + 系统属性，让它从资源管理器里消失；里面的文件本身一个字节都没加密。懂电脑的人关掉”隐藏受保护的操作系统文件">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://wawel114.github.io/img/avatar.jpg">
+<meta property="article:published_time" content="2026-11-25T03:20:00.000Z">
+<meta property="article:modified_time" content="2026-11-25T04:51:36.263Z">
+<meta property="article:author" content="wawel">
+<meta property="article:tag" content="文件夹保险箱">
+<meta property="article:tag" content="FolderVault">
+<meta property="article:tag" content="PowerShell">
+<meta property="article:tag" content="Windows">
+<meta property="article:tag" content="小工具">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://wawel114.github.io/img/avatar.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "文件夹保险箱（FolderVault）：给文件夹加一道密码门",
+  "url": "https://wawel114.github.io/posts/foldervault-intro/",
+  "image": "https://wawel114.github.io/img/avatar.jpg",
+  "datePublished": "2026-11-25T03:20:00.000Z",
+  "dateModified": "2026-11-25T04:51:36.263Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "wawel",
+      "url": "https://wawel114.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/favicon.png"><link rel="canonical" href="https://wawel114.github.io/posts/foldervault-intro/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.2"><link rel="stylesheet" href="/lib/fontawesome/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        try {
+          const data = { value }
+
+          if (ttl != null) {
+            data.expiry = Date.now() + ttl * 86400000
+          }
+
+          localStorage.setItem(key, JSON.stringify(data))
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', 'undefined')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', 'undefined')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          const mediaQueryDark = window.matchMedia('(prefers-color-scheme: dark)')
+          const mediaQueryLight = window.matchMedia('(prefers-color-scheme: light)')
+
+          if (theme === undefined) {
+            if (mediaQueryLight.matches) activateLightMode()
+            else if (mediaQueryDark.matches) activateDarkMode()
+            else {
+              const hour = new Date().getHours()
+              const start = 6
+              const end = 18
+              const isNight =
+                start < end
+                    ? hour < start || hour >= end
+                    : hour >= start || hour < end
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            mediaQueryDark.addEventListener('change', e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else {
+            theme === 'light' ? activateLightMode() : activateDarkMode()
+          }
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.json","preload":true,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '文件夹保险箱（FolderVault）：给文件夹加一道密码门',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css?v=f6ad702f94"><link rel="stylesheet" href="/css/y2k.css?v=b9eddcfac3"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar" loading='lazy'/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">9</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">14</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/changelog/"><i class="fa-fw fas fa-clipboard-list"></i><span> 更新日志</span></a></div><div class="menus_item"><a class="site-page" href="/y2k/"><i class="fa-fw fas fa-window-maximize"></i><span> 千禧年</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/banner.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">wawel</span></a><a class="nav-page-title" href="/"><span class="site-name">文件夹保险箱（FolderVault）：给文件夹加一道密码门</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/changelog/"><i class="fa-fw fas fa-clipboard-list"></i><span> 更新日志</span></a></div><div class="menus_item"><a class="site-page" href="/y2k/"><i class="fa-fw fas fa-window-maximize"></i><span> 千禧年</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">文件夹保险箱（FolderVault）：给文件夹加一道密码门</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-11-25T03:20:00.000Z" title="发表于 2026-11-25 11:20:00">2026-11-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-11-25T04:51:36.263Z" title="更新于 2026-11-25 12:51:36">2026-11-25</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%88%91%E7%9A%84%E8%BD%AF%E4%BB%B6/">我的软件</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><blockquote>
+<p>一个自写的 Windows 小工具：把文件夹”藏起来”，要用时输密码才打开。零依赖、免安装、可放 U 盘带走。**默认密码是 <code>1111</code>**，下载后建议尽快改成自己的。</p>
+</blockquote>
+<h2 id="先说清楚：它不是加密"><a href="#先说清楚：它不是加密" class="headerlink" title="先说清楚：它不是加密"></a>先说清楚：它不是加密</h2><p>这点必须放在最前面，免得误解：</p>
+<p><strong>它是”访问控制”，不是”文件加密”。</strong> 工具做的是把文件夹设为<strong>隐藏 + 系统</strong>属性，让它从资源管理器里消失；里面的文件本身<strong>一个字节都没加密</strong>。懂电脑的人关掉”隐藏受保护的操作系统文件”、或直接全盘搜索，仍然能找到。</p>
+<p>所以它的定位很明确：</p>
+<table>
+<thead>
+<tr>
+<th>适合 ✅</th>
+<th>不适合 ❌</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>防家人、同事随手点开误翻</td>
+<td>防有意窃取、防拆盘读取</td>
+</tr>
+<tr>
+<td>临时藏一下私密文件夹</td>
+<td>存真正敏感的资料</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>如果需要真加密，请用 7-Zip 的 AES-256 加密压缩包，或 VeraCrypt 加密卷。忘记本工具的密码无法找回（只存哈希，不可逆推），请记牢。</p>
+</blockquote>
+<h2 id="它能做什么"><a href="#它能做什么" class="headerlink" title="它能做什么"></a>它能做什么</h2><ul>
+<li><strong>双击即用</strong>：VBS 启动器，无黑色命令行窗口。</li>
+<li><strong>密码门</strong>：首次运行设置密码（默认包已设为 <code>1111</code>），之后输对密码才能打开文件夹。</li>
+<li><strong>多文件夹管理</strong>：可添加多个受保护文件夹，统一列在主界面，一键全部上锁。</li>
+<li><strong>取消保护 &#x2F; 改密码</strong>：都需验证，取消后文件夹恢复可见，里面文件不受影响。</li>
+<li><strong>可携带</strong>：相对路径设计，整个文件夹拷到 U 盘、换台 Windows 电脑双击照样用。</li>
+</ul>
+<h2 id="技术小结"><a href="#技术小结" class="headerlink" title="技术小结"></a>技术小结</h2><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>方案</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>实现</td>
+<td>PowerShell + .NET WinForms（Windows 自带，零依赖）</td>
+</tr>
+<tr>
+<td>密码存储</td>
+<td>SHA256 + 随机 salt，配置里不存明文</td>
+</tr>
+<tr>
+<td>隐藏方式</td>
+<td>置位 Hidden(2) + System(4) 文件属性</td>
+</tr>
+<tr>
+<td>配置</td>
+<td><code>vault.config</code>（JSON，存哈希&#x2F;salt&#x2F;文件夹列表）</td>
+</tr>
+</tbody></table>
+<p>密码校验用的是 <code>SHA256(salt + &quot;|&quot; + 密码)</code>，与配置文件中的哈希比对。salt 为随机 GUID，所以同样的密码在不同安装里哈希也不同。</p>
+<h2 id="怎么用"><a href="#怎么用" class="headerlink" title="怎么用"></a>怎么用</h2><ol>
+<li>下载下面的压缩包，解压到任意文件夹（建议整个文件夹一起留着，别只拷 <code>FolderVault.ps1</code>）。</li>
+<li>双击 <code>启动-文件夹保险箱.vbs</code>，输入密码 **默认 <code>1111</code>**。</li>
+<li>点「添加文件夹」，选中要藏的目录 —— 它会立刻从资源管理器消失。</li>
+<li>想打开时：在列表里选中它，点「打开（需密码）」，输密码即可。</li>
+<li>用完点「全部上锁」，重新藏回去。</li>
+</ol>
+<p><strong>建议</strong>：拿到后第一件事就是点「修改密码」，把默认的 <code>1111</code> 换成自己的。</p>
+<p>配置文件 <code>vault.config</code> 里会记录你添加过的<strong>文件夹路径</strong>，把整个包发给别人前记得清掉（删除该文件会让你重设密码，但文件夹里的文件一个字节都不会丢；想立刻恢复可见，命令行执行 <code>attrib -h -s &quot;文件夹路径&quot;</code>）。</p>
+<h2 id="备用方案：一键显示所有文件夹"><a href="#备用方案：一键显示所有文件夹" class="headerlink" title="备用方案：一键显示所有文件夹"></a>备用方案：一键显示所有文件夹</h2><p>万一哪天忘了密码、或者主程序打不开，还有一个更简单的后路：<strong>直接把文件夹全部显示出来</strong>。</p>
+<p>因为文件根本没加密，只是被”隐藏 + 系统”两个属性藏了起来，所以不需要密码 —— 读 <code>vault.config</code> 里的文件夹列表，逐个清掉这两个属性位就行。这比主程序更精准、更不易出错。</p>
+<p>我做成了<strong>独立启动器</strong>，和主工具包分开，你可以按需单独拿取：想藏文件夹用原工具，想一键全显示用这个。两个互不干扰。</p>
+<p><strong>用法</strong>：下载下面两个文件，放在<strong>同一个文件夹</strong>里（最好直接放进「文件夹保险箱-完整包」，这样配置文件就近就能找到），双击 <code>启动-一键显示所有文件夹.vbs</code>，弹窗会告诉你显示了几个文件夹。找不到配置时它会按顺序找：启动器所在目录 → 桌面上的「文件夹保险箱-完整包」。</p>
+<p>启动器（无黑窗口）：</p>
+<figure class="highlight vbs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Option</span> <span class="keyword">Explicit</span></span><br><span class="line"><span class="keyword">Dim</span> ws, fso, here, ps, cmd</span><br><span class="line"><span class="keyword">Set</span> ws = <span class="built_in">CreateObject</span>(<span class="string">&quot;WScript.Shell&quot;</span>)</span><br><span class="line"><span class="keyword">Set</span> fso = <span class="built_in">CreateObject</span>(<span class="string">&quot;Scripting.FileSystemObject&quot;</span>)</span><br><span class="line">here = fso.GetParentFolderName(WScript.ScriptFullName)</span><br><span class="line">ps = here &amp; <span class="string">&quot;\一键显示所有文件夹.ps1&quot;</span></span><br><span class="line">cmd = <span class="string">&quot;powershell.exe -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File &quot;&quot;&quot;</span> &amp; ps &amp; <span class="string">&quot;&quot;&quot;&quot;</span></span><br><span class="line">ws.Run cmd, <span class="number">0</span>, <span class="literal">False</span></span><br></pre></td></tr></table></figure>
+
+<p>核心脚本（<code>一键显示所有文件夹.ps1</code>）：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Add-Type</span> <span class="literal">-AssemblyName</span> System.Windows.Forms</span><br><span class="line"><span class="variable">$ErrorActionPreference</span> = <span class="string">&#x27;Stop&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Find-Config</span></span> &#123;</span><br><span class="line">    <span class="variable">$local</span> = <span class="built_in">Join-Path</span> <span class="variable">$PSScriptRoot</span> <span class="string">&#x27;vault.config&#x27;</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">Test-Path</span> <span class="literal">-LiteralPath</span> <span class="variable">$local</span>) &#123; <span class="keyword">return</span> <span class="variable">$local</span> &#125;</span><br><span class="line">    <span class="variable">$desktop</span> = [<span class="type">Environment</span>]::GetFolderPath(<span class="string">&#x27;Desktop&#x27;</span>)</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable">$desktop</span>) &#123;</span><br><span class="line">        <span class="variable">$pack</span> = <span class="built_in">Join-Path</span> <span class="variable">$desktop</span> <span class="string">&#x27;文件夹保险箱-完整包\vault.config&#x27;</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">Test-Path</span> <span class="literal">-LiteralPath</span> <span class="variable">$pack</span>) &#123; <span class="keyword">return</span> <span class="variable">$pack</span> &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="variable">$null</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$cfg</span> = <span class="built_in">Find-Config</span></span><br><span class="line"><span class="keyword">if</span> (<span class="operator">-not</span> <span class="variable">$cfg</span>) &#123;</span><br><span class="line">    [<span class="type">System.Windows.Forms.MessageBox</span>]::Show(<span class="string">&#x27;找不到 vault.config&#x27;</span>, <span class="string">&#x27;一键显示文件夹&#x27;</span>)</span><br><span class="line">    <span class="keyword">exit</span> <span class="number">1</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$json</span> = <span class="built_in">Get-Content</span> <span class="literal">-LiteralPath</span> <span class="variable">$cfg</span> <span class="literal">-Raw</span> <span class="literal">-Encoding</span> UTF8 | <span class="built_in">ConvertFrom-Json</span></span><br><span class="line"><span class="variable">$folders</span> = <span class="selector-tag">@</span>()</span><br><span class="line"><span class="keyword">if</span> (<span class="variable">$null</span> <span class="operator">-ne</span> <span class="variable">$json</span>.Folders) &#123; <span class="variable">$folders</span> = <span class="selector-tag">@</span>(<span class="variable">$json</span>.Folders) &#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$shown</span> = <span class="selector-tag">@</span>(); <span class="variable">$missing</span> = <span class="selector-tag">@</span>()</span><br><span class="line"><span class="keyword">foreach</span> (<span class="variable">$p</span> <span class="keyword">in</span> <span class="variable">$folders</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">Test-Path</span> <span class="literal">-LiteralPath</span> <span class="variable">$p</span>) &#123;</span><br><span class="line">        <span class="variable">$item</span> = <span class="built_in">Get-Item</span> <span class="literal">-LiteralPath</span> <span class="variable">$p</span> <span class="literal">-Force</span></span><br><span class="line">        <span class="comment"># 只清 Hidden(2) + System(4)，其它属性（如只读）原样保留</span></span><br><span class="line">        <span class="variable">$item</span>.Attributes = [<span class="type">IO.FileAttributes</span>](([<span class="built_in">int</span>]<span class="variable">$item</span>.Attributes) <span class="operator">-band</span> (<span class="operator">-bnot</span> <span class="number">2</span>) <span class="operator">-band</span> (<span class="operator">-bnot</span> <span class="number">4</span>))</span><br><span class="line">        <span class="variable">$shown</span> += <span class="variable">$p</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="variable">$missing</span> += <span class="variable">$p</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$msg</span> = <span class="string">&quot;完成：已显示 <span class="variable">$</span>(<span class="variable">$shown</span>.Count) 个文件夹。&quot;</span></span><br><span class="line"><span class="keyword">if</span> (<span class="variable">$missing</span>.Count <span class="operator">-gt</span> <span class="number">0</span>) &#123; <span class="variable">$msg</span> += <span class="string">&quot;`n`n<span class="variable">$</span>(<span class="variable">$missing</span>.Count) 个路径不存在：`n&quot;</span> + (<span class="variable">$missing</span> <span class="operator">-join</span> <span class="string">&quot;`n&quot;</span>) &#125;</span><br><span class="line">[<span class="type">System.Windows.Forms.MessageBox</span>]::Show(<span class="variable">$msg</span>, <span class="string">&#x27;一键显示文件夹&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>小提示：Windows PowerShell 5.1 读中文脚本要求 <strong>UTF-8 带 BOM</strong> 编码，否则会报语法错。如果你自己复制粘贴保存，记得用记事本「另存为」时选 UTF-8，或用 VS Code 存成 UTF-8 with BOM；直接用下面提供的文件则无需担心。</p>
+</blockquote>
+<h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><ul>
+<li><p><a href="/downloads/%E6%96%87%E4%BB%B6%E5%A4%B9%E4%BF%9D%E9%99%A9%E7%AE%B1-v1.zip">文件夹保险箱 v1 完整包（zip，约 10 KB）</a></p>
+</li>
+<li><p><a href="/downloads/%E4%B8%80%E9%94%AE%E6%98%BE%E7%A4%BA%E6%89%80%E6%9C%89%E6%96%87%E4%BB%B6%E5%A4%B9-%E5%90%AF%E5%8A%A8%E5%99%A8.vbs">备用：一键显示所有文件夹 - 启动器（vbs）</a></p>
+</li>
+<li><p><a href="/downloads/%E4%B8%80%E9%94%AE%E6%98%BE%E7%A4%BA%E6%89%80%E6%9C%89%E6%96%87%E4%BB%B6%E5%A4%B9.ps1">备用：一键显示所有文件夹 - 核心脚本（ps1）</a></p>
+</li>
+<li><p><a href="/downloads/%E6%96%87%E4%BB%B6%E5%A4%B9%E4%BF%9D%E9%99%A9%E7%AE%B1-v1.zip">文件夹保险箱 v1 完整包（zip，约 10 KB）</a></p>
+</li>
+</ul>
+<p>包内含：<code>FolderVault.ps1</code>（主程序）、<code>启动-文件夹保险箱.vbs</code>（启动器）、<code>vault.config</code>（默认密码 <code>1111</code>、文件夹列表为空的干净配置）、<code>使用说明.txt</code>、<code>README-先看我.txt</code>、<code>文件夹保险箱-工具文档.md</code>。</p>
+<blockquote>
+<p>仅支持 Windows。工具为个人兴趣所作，按”现状”提供，使用前请自行判断是否符合你的需求。</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://wawel114.github.io">wawel</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://wawel114.github.io/posts/foldervault-intro/">https://wawel114.github.io/posts/foldervault-intro/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://wawel114.github.io" target="_blank">wawel</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%96%87%E4%BB%B6%E5%A4%B9%E4%BF%9D%E9%99%A9%E7%AE%B1/">文件夹保险箱</a><a class="post-meta__tags" href="/tags/FolderVault/">FolderVault</a><a class="post-meta__tags" href="/tags/PowerShell/">PowerShell</a><a class="post-meta__tags" href="/tags/Windows/">Windows</a><a class="post-meta__tags" href="/tags/%E5%B0%8F%E5%B7%A5%E5%85%B7/">小工具</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/peacekeeper-tool/" title="PeacekeeperTool：战地1维和者彩蛋解密工具推荐"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">PeacekeeperTool：战地1维和者彩蛋解密工具推荐</div></div><div class="info-2"><div class="info-item-1"> 一个面向《战地1》“维和者（Peacekeeper）”彩蛋解锁流程的开源解密辅助工具，集成了步骤指引、摩斯电码识别与多种谜题解密功能。  基本信息   项目 说明    软件名称 PeacekeeperTool（战地一维和者菜单解密工具）   项目仓库 FlipFlopszzz&#x2F;PeacekeeperTool   作者 FlipFlopszzz   许可证 GPL-3.0（开源免费）   当前版本 v1.6（2025-05-29 发布）   平台 Windows（作者说明：面向并测试于 Windows 11，Steam 绑定 EA 平台的《战地1》）   技术栈 Python 3.13 + PySide6，PyInstaller 打包，Inno Setup 制作安装包   官方更新 不由本站跟进，请以 GitHub 仓库&#x2F;Release 为准   这是什么工具？PeacekeeperTool 是一个用于简化《战地1》维和者彩蛋获取过程的桌面工具。根据项目 README，它的定位是“维和者菜单解密工具”，主要帮助玩家处理彩蛋流程中的指引、录音、摩斯电码识别和密...</div></div></div></a><a class="pagination-related" href="/posts/p20261124-0834/" title="关于维和者"><img class="cover" src="/images/uploads/p20261124-0834/cover.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post" loading='lazy'><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">关于维和者</div></div><div class="info-2"><div class="info-item-1">关于维和者获得维和者通过大佬提供的工具与B站上各位大佬的教程视频，以及ai的些许帮助，我历时一个通宵加一个下午拿到了战地1的彩蛋武器——维和者  历程出发点当我看到群友试图使用ai识别摩斯电码解彩蛋的时候我也参与帮忙了，但是事后得出结论让ai听摩斯电码就是个错误。之后我忽然想到让ai帮忙收集需要的工具以及教程不就好了，因此我通过ai（opencode）让他帮我把需要的工具以及说明书集合到了一起方便使用，由此我开始了我的解密之旅。 逐步升级在逐步升级之前我已经把简单的野兽之源和看见天使完成了，因此直接跳到逐步升级  要完成逐步升级，需要一个不是暴风雪的天气，最好也不是大晴天因为可能会有鸟叫，实际用下来其实除了暴风雪其他都行，有了工具其实这个并不难，我重复识别了几次确认密码就开始了，之后我却卡在了找房子阶段，不过也就卡了一会，看清记住房子位置之后就是互动环节了，之后也如愿拿到了逐步升级   不祥之兆（金牌）这个我遇到的困难是没记住机制，趴下听到音效就可以开始录音了，我当时还以为不是，重开了几次之后问群主才知道，说是金牌其实这是最简单的摩斯密码彩蛋了 初显身手（铜牌）傻逼铜牌，得听8次...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar" loading='lazy'/></div><div class="author-info-name">wawel</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">9</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">14</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/wawel114"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">虽然这里有很多我产出的💩，但还是请不要当公共厕所</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%88%E8%AF%B4%E6%B8%85%E6%A5%9A%EF%BC%9A%E5%AE%83%E4%B8%8D%E6%98%AF%E5%8A%A0%E5%AF%86"><span class="toc-number">1.</span> <span class="toc-text">先说清楚：它不是加密</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%83%E8%83%BD%E5%81%9A%E4%BB%80%E4%B9%88"><span class="toc-number">2.</span> <span class="toc-text">它能做什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8A%80%E6%9C%AF%E5%B0%8F%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">技术小结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E7%94%A8"><span class="toc-number">4.</span> <span class="toc-text">怎么用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%87%E7%94%A8%E6%96%B9%E6%A1%88%EF%BC%9A%E4%B8%80%E9%94%AE%E6%98%BE%E7%A4%BA%E6%89%80%E6%9C%89%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="toc-number">5.</span> <span class="toc-text">备用方案：一键显示所有文件夹</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD"><span class="toc-number">6.</span> <span class="toc-text">下载</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/peacekeeper-tool/" title="PeacekeeperTool：战地1维和者彩蛋解密工具推荐">PeacekeeperTool：战地1维和者彩蛋解密工具推荐</a><time datetime="2026-11-25T12:00:00.000Z" title="发表于 2026-11-25 20:00:00">2026-11-25</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/foldervault-intro/" title="文件夹保险箱（FolderVault）：给文件夹加一道密码门">文件夹保险箱（FolderVault）：给文件夹加一道密码门</a><time datetime="2026-11-25T03:20:00.000Z" title="发表于 2026-11-25 11:20:00">2026-11-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/p20261124-0834/" title="关于维和者"><img src="/images/uploads/p20261124-0834/cover.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="关于维和者" loading='lazy'/></a><div class="content"><a class="title" href="/posts/p20261124-0834/" title="关于维和者">关于维和者</a><time datetime="2026-11-24T00:34:00.000Z" title="发表于 2026-11-24 08:34:00">2026-11-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/candyball-intro/" title="candy ball     一位来自拉脱维亚的绝美coser"><img src="/images/uploads/candyball-intro/cover.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="candy ball     一位来自拉脱维亚的绝美coser" loading='lazy'/></a><div class="content"><a class="title" href="/posts/candyball-intro/" title="candy ball     一位来自拉脱维亚的绝美coser">candy ball     一位来自拉脱维亚的绝美coser</a><time datetime="2026-11-19T11:00:00.000Z" title="发表于 2026-11-19 19:00:00">2026-11-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/p20261119-1344/" title="如何从零开始撸一个自己的网站"><img src="/images/uploads/p20261119-1344/cover.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="如何从零开始撸一个自己的网站" loading='lazy'/></a><div class="content"><a class="title" href="/posts/p20261119-1344/" title="如何从零开始撸一个自己的网站">如何从零开始撸一个自己的网站</a><time datetime="2026-11-19T05:44:37.000Z" title="发表于 2026-11-19 13:44:37">2026-11-19</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2026 By wawel</span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.2"></script><script src="/js/main.js?v=5.7.2"></script><div class="js-pjax"></div><script src="/js/mobile-nav-capsules.js?v=ba5b71ba0e"></script><script src="/js/mobile-post-card.js?v=ca5b371865"></script><script src="/js/section-nav.js?v=d5917441dd"></script><script src="/js/mobile-post-cover.js?v=9f01644d9d"></script><script src="/js/y2k-aging.js?v=4b35a8e526"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章 / 工具名" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.7.2"></script></div></div></body></html>
