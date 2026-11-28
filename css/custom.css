@@ -477,3 +477,25 @@
   background: #1d1d1d;
   border-color: rgba(255, 255, 255, .12);
 }
+
+/* ------------------------------------------------------------------
+ * 手机端：全站和服背景纹理
+ * 固定铺一层现有的和服竖图，浅色 14%、深色压到 6%，只做氛围不抢文字。
+ * z-index:-1 放在内容下面，pointer-events:none 不挡任何点击。
+ * 桌面端完全不生效。
+ * ------------------------------------------------------------------ */
+@media screen and (max-width: 768px) {
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: url('/img/banner-mobile.jpg') center top / cover no-repeat;
+    opacity: .14;
+  }
+  [data-theme="dark"] body::before,
+  html.dark body::before {
+    opacity: .06;
+  }
+}
