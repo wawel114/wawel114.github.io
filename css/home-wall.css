@@ -23,6 +23,9 @@ body.home-wall-page .cb-wall {
   pointer-events: none;
   overflow: hidden;
   background: #0a080c;
+  /* 首屏只有全屏头图，壁纸等滚到文章区再淡入（wall-revealed 由 JS 控制） */
+  opacity: 0;
+  transition: opacity .9s ease;
 }
 body.home-wall-page .cb-wall.left { left: 0; }
 body.home-wall-page .cb-wall.right { right: 0; }
@@ -85,6 +88,20 @@ body.home-wall-page .cb-wall .cb-mark {
 @media (min-width: 769px) {
   body.home-wall-page { padding-left: var(--cb-wall-w); padding-right: var(--cb-wall-w); }
   body.home-wall-page #body-wrap { box-shadow: 0 0 60px rgba(0,0,0,.5), 0 0 22px rgba(192,82,63,.18); }
+
+  /* 首屏：头图占满整屏，左右壁纸先藏起来（内容区 padding 一直保留，
+     所以壁纸出现时不会有布局跳动，只需把 header 往两边撑到 100vw） */
+  body.home-wall-page #page-header.full_page {
+    width: 100vw;
+    height: 100vh;
+    margin-left: calc(-1 * var(--cb-wall-w));
+    margin-right: calc(-1 * var(--cb-wall-w));
+    background-size: cover !important;
+    background-position: center center !important;
+  }
+
+  /* 滚到文章列表后壁纸淡入 */
+  body.home-wall-page.wall-revealed .cb-wall { opacity: 1; }
 }
 @media (max-width: 768px) {
   body.home-wall-page .cb-wall { display: none !important; }

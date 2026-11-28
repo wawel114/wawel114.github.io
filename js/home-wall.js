@@ -50,4 +50,25 @@
 
   build('left');
   build('right');
+
+  /* 首屏只有全屏头图；滚到文章列表（.recent-posts）时再让两侧壁纸淡入。
+     往回滚到头图区会自动淡出，保持「先大图、后壁纸」的进入节奏。 */
+  function setReveal(on) {
+    document.body.classList.toggle('wall-revealed', on);
+  }
+  var posts = document.querySelector('.recent-posts');
+  if (posts && typeof IntersectionObserver !== 'undefined') {
+    var io = new IntersectionObserver(function (entries) {
+      setReveal(entries[0].isIntersecting);
+    }, { rootMargin: '0px 0px -10% 0px' });
+    io.observe(posts);
+  } else {
+    var header = document.getElementById('page-header');
+    function onScroll() {
+      var h = header ? header.offsetHeight : window.innerHeight;
+      setReveal(window.scrollY > h * 0.72);
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
 })();
