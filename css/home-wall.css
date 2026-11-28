@@ -30,9 +30,6 @@ body.home-wall-page .cb-wall {
 body.home-wall-page .cb-wall.left { left: 0; }
 body.home-wall-page .cb-wall.right { right: 0; }
 
-/* 滚到文章列表后壁纸淡入（桌面细条 / 手机细边共用） */
-body.home-wall-page.wall-revealed .cb-wall { opacity: 1; }
-
 body.home-wall-page .cb-wall img {
   position: absolute;
   inset: 0;
@@ -103,52 +100,9 @@ body.home-wall-page .cb-wall .cb-mark {
     background-position: center center !important;
   }
 
+  /* 滚到文章列表后壁纸淡入 */
+  body.home-wall-page.wall-revealed .cb-wall { opacity: 1; }
 }
 @media (max-width: 768px) {
-  /* 手机端：桌面那种 158px 竖条太占地方，改成左右各 12px 细边，
-     滚到文章区才淡入；头图仍往两边撑满，不被细边挤窄 */
-  body.home-wall-page { --cb-wall-w: 12px; }
-  body.home-wall-page .cb-wall {
-    display: block !important;
-    width: var(--cb-wall-w);
-    background: #1a100e;
-  }
-  body.home-wall-page .cb-wall::before,
-  body.home-wall-page .cb-wall .cb-mark {
-    display: none;
-  }
-  /* 手机端 body 本来就没有留白，头图保持 100% 宽即可，不能用桌面的负边距 */
-}
-
-/* 手机端头图下方的横向壁纸带（JS 只在手机端插入） */
-body.home-wall-page .cb-strip { display: none; }
-@media (max-width: 768px) {
-  body.home-wall-page .cb-strip {
-    display: block;
-    position: relative;
-    width: 100%;
-    height: 64px;
-    overflow: hidden;
-    background: #1a100e;
-    z-index: 2;
-  }
-}
-body.home-wall-page .cb-strip img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center center;
-  opacity: 0;
-  transition: opacity 1.2s ease;
-  filter: brightness(.82) saturate(.95);
-}
-body.home-wall-page .cb-strip img.on { opacity: 1; }
-body.home-wall-page .cb-strip::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(180deg, rgba(26,16,14,.3), transparent 45%, rgba(26,16,14,.72));
+  body.home-wall-page .cb-wall { display: none !important; }
 }

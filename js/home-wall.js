@@ -48,37 +48,8 @@
     }, fade);
   }
 
-  /* 手机端：头图下方插一条 64px 高的横向壁纸带，12 张横条轮播 */
-  function buildStrip() {
-    var strip = document.createElement('div');
-    strip.className = 'cb-strip';
-    strip.setAttribute('aria-hidden', 'true');
-    var imgs = [];
-    for (var i = 1; i <= 12; i++) {
-      var im = document.createElement('img');
-      im.src = '/images/home-strip/' + pad(i) + '.webp';
-      im.alt = '';
-      strip.appendChild(im);
-      imgs.push(im);
-    }
-    var header = document.getElementById('page-header');
-    if (header && header.parentNode) {
-      header.parentNode.insertBefore(strip, header.nextSibling);
-    } else {
-      document.body.insertBefore(strip, document.body.firstChild);
-    }
-    var cur = 0;
-    imgs[cur].classList.add('on');
-    setInterval(function () {
-      imgs[cur].classList.remove('on');
-      cur = (cur + 1) % imgs.length;
-      imgs[cur].classList.add('on');
-    }, 8000);
-  }
-
   build('left');
   build('right');
-  if (window.matchMedia && window.matchMedia('(max-width: 768px)').matches) buildStrip();
 
   /* 首屏只有全屏头图；滚到文章列表（.recent-posts）时再让两侧壁纸淡入。
      往回滚到头图区会自动淡出，保持「先大图、后壁纸」的进入节奏。 */
