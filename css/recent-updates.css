@@ -1,0 +1,105 @@
+/* 首页「最近更新」公告条
+   只由 scripts/recent-updates.js 注入首页，其它页面不会有这个 DOM。 */
+/* main.layout 是 flex 容器（左主栏 + 右侧栏），公告条必须独占一行 */
+.recent-updates-banner {
+  flex: 0 0 100%;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 14px 0 20px;
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(6px);
+}
+.recent-updates-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 12px;
+  color: var(--theme-color, #d9567a);
+}
+.recent-updates-head i {
+  font-size: 16px;
+}
+.recent-updates-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.recent-update-item {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.6);
+  border-left: 3px solid var(--theme-color, #d9567a);
+}
+.recent-update-line {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.recent-update-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+  text-decoration: none;
+}
+.recent-update-title:hover {
+  color: var(--theme-color, #d9567a);
+}
+.recent-update-meta {
+  font-size: 12px;
+  color: #999;
+}
+.recent-update-summary {
+  font-size: 13px;
+  line-height: 1.65;
+  color: #555;
+}
+.recent-update-more {
+  margin-left: 8px;
+  font-size: 12px;
+  color: var(--theme-color, #d9567a);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.recent-update-more:hover {
+  text-decoration: underline;
+}
+
+/* 暗色主题适配 */
+[data-theme="dark"] .recent-updates-banner,
+html.dark .recent-updates-banner {
+  background: rgba(30, 30, 34, 0.78);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+[data-theme="dark"] .recent-update-item,
+html.dark .recent-update-item {
+  background: rgba(255, 255, 255, 0.04);
+}
+[data-theme="dark"] .recent-update-title,
+html.dark .recent-update-title {
+  color: #e8e8e8;
+}
+[data-theme="dark"] .recent-update-summary,
+html.dark .recent-update-summary {
+  color: #bbb;
+}
+
+/* 手机端紧凑一点 */
+@media (max-width: 768px) {
+  .recent-updates-banner {
+    margin: 10px 0 16px;
+    padding: 12px 14px;
+  }
+  .recent-updates-head { font-size: 14px; margin-bottom: 10px; }
+  .recent-update-item { padding: 8px 10px; }
+  .recent-update-title { font-size: 13px; }
+  .recent-update-summary { font-size: 12px; }
+}
