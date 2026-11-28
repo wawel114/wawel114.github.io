@@ -7,7 +7,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://wawel114.github.io/img/avatar.jpg">
 <meta property="article:published_time" content="2026-11-24T16:10:00.000Z">
-<meta property="article:modified_time" content="2026-11-28T12:46:26.668Z">
+<meta property="article:modified_time" content="2026-11-28T13:08:16.597Z">
 <meta property="article:author" content="wawel">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://wawel114.github.io/img/avatar.jpg"><script type="application/ld+json"></script><link rel="shortcut icon" href="/favicon.png"><link rel="canonical" href="https://wawel114.github.io/changelog/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.2"><link rel="stylesheet" href="/lib/fontawesome/css/all.min.css"><script>
@@ -215,7 +215,7 @@
 }</script><link rel="stylesheet" href="/css/custom.css?v=ecd4d63dce"><link rel="stylesheet" href="/css/y2k.css?v=b9eddcfac3"><link rel="stylesheet" href="/css/recent-updates.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar" loading='lazy'/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">9</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">14</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/changelog/"><i class="fa-fw fas fa-clipboard-list"></i><span> 更新日志</span></a></div><div class="menus_item"><a class="site-page" href="/y2k/"><i class="fa-fw fas fa-window-maximize"></i><span> 千禧年</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="not-home-page" id="page-header" style="background-image: url(/img/banner.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">wawel</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/changelog/"><i class="fa-fw fas fa-clipboard-list"></i><span> 更新日志</span></a></div><div class="menus_item"><a class="site-page" href="/y2k/"><i class="fa-fw fas fa-window-maximize"></i><span> 千禧年</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="page-site-info"><h1 id="site-title">本站功能更新日志</h1></div></header><main class="layout hide-aside" id="content-inner"><div id="page"><div class="container" id="article-container"><blockquote>
 <p>这篇页面记录本站从建站以来的功能改动，有固定入口：顶部导航的「<strong>更新日志</strong>」（手机端是胶囊条里的「更新日志」）。<br>它<strong>不是文章</strong>，不会出现在首页、归档、分类列表里，不占文章列表的位置。<br><strong>最新的改动放在最上面</strong>，往下依次是维护方法、项目速览、功能清单等；给接手 AI 的说明信息统一放在<strong>页面最底部</strong>，不影响你先看更新。<br>接手开发时先看本机 <code>docs/README.md</code>（文档索引）、<code>docs/MANUAL.md</code>（日常操作）和 <code>docs/HANDOFF.md</code>（背景、恢复步骤、待办）。</p>
 </blockquote>
-<p><strong>最后更新：2026-11-28　当前版本：v2026.11.28-7</strong></p>
+<p><strong>最后更新：2026-11-28　当前版本：v2026.11.28-8</strong></p>
 <h2 id="更新记录"><a href="#更新记录" class="headerlink" title="更新记录"></a>更新记录</h2><blockquote>
 <p>最新在最上面。格式见「这篇文章怎么维护」小节；给接手 AI 的约定在本页最底部。</p>
 </blockquote>
@@ -229,6 +229,12 @@
 </tr>
 </thead>
 <tbody><tr>
+<td>2026-11-28</td>
+<td>调整</td>
+<td><strong>手机端新增壁纸元素</strong>：头图下方加一条 64px 高的横向壁纸带，12 张专裁 640×120 和服横条每 8 秒淡入淡出（素材共约 100KB，从竖条壁纸按脸部位置裁出，能看见人物与发饰）；滚到文章区时左右各淡入 12px 细边壁纸，沿用桌面「先大图、后壁纸」的节奏。手机端头图保持满宽，无深色边、不遮正文</td>
+<td><code>source/css/home-wall.css</code>、<code>source/js/home-wall.js</code>、<code>source/images/home-strip/</code></td>
+</tr>
+<tr>
 <td>2026-11-28</td>
 <td>调整</td>
 <td><strong>首页进入节奏改成「先全屏头图、后两侧壁纸」</strong>：桌面首屏把头图撑到 100vw×100vh 全屏显示（cover 铺满、白字导航清晰），两侧壁纸先隐藏；滚到文章列表进入视口后由 IntersectionObserver 触发壁纸淡入（0.9 秒），往回滚到头图区自动淡出。内容区 158px 留白始终保留，壁纸出现时没有布局跳动；手机端无壁纸、保持原样</td>
