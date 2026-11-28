@@ -1,8 +1,9 @@
 /* 首页「最近更新」公告条
    只由 scripts/recent-updates.js 注入首页，其它页面不会有这个 DOM。 */
-/* main.layout 是 flex 容器（左主栏 + 右侧栏），公告条必须独占一行 */
+/* 插在左主栏 .recent-posts 内部开头，是普通块级元素：
+   不要用 flex:0 0 100%——main.layout 是 flex 容器且 align-items:stretch，
+   会把公告条拉到整页高度（浅色模式下一大块白盖住文章列表）。 */
 .recent-updates-banner {
-  flex: 0 0 100%;
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
