@@ -345,8 +345,8 @@
 /* ------------------------------------------------------------------
  * 电脑端：横幅下方的栏目导航条（由 source/js/section-nav.js 生成）
  * 手机端不显示，仍走胶囊导航；配色跟随主题变量，暗色自动适配。
- * 主色硬编码 #E06A8B 与 _config.butterfly.yml 的 theme_color.main 一致，
- * 换主色时记得同步改这里两处。
+ * 主色硬编码 #C0523F 与 _config.butterfly.yml 的 theme_color.main 一致，
+ * 换主色时记得同步改这里（含 rgba 三元组）。
  * ------------------------------------------------------------------ */
 .section-nav {
   display: none;
@@ -356,7 +356,7 @@
   .section-nav {
     display: block;
     background: var(--card-bg);
-    border-bottom: 1px solid rgba(224, 106, 139, .2);
+    border-bottom: 1px solid rgba(192, 82, 63, .2);
     box-shadow: 0 2px 12px rgba(0, 0, 0, .05);
   }
 
@@ -381,12 +381,12 @@
   }
 
   .section-nav-item:hover {
-    background: rgba(224, 106, 139, .12);
-    color: #E06A8B;
+    background: rgba(192, 82, 63, .12);
+    color: #C0523F;
   }
 
   .section-nav-item.active {
-    background: #E06A8B;
+    background: #C0523F;
     color: #fff;
   }
 }
@@ -414,7 +414,7 @@
   justify-content: space-between;
   gap: 12px;
   padding: 14px 18px;
-  border: 1px solid rgba(224, 106, 139, .22);
+  border: 1px solid rgba(192, 82, 63, .22);
   border-radius: 10px;
   background: var(--card-bg);
   text-decoration: none;
@@ -422,9 +422,9 @@
 }
 
 .sec-item:hover {
-  border-color: #E06A8B;
+  border-color: #C0523F;
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(224, 106, 139, .12);
+  box-shadow: 0 4px 14px rgba(192, 82, 63, .12);
 }
 
 .sec-item-main {
@@ -447,7 +447,7 @@
 }
 
 .sec-item-arrow {
-  color: #E06A8B;
+  color: #C0523F;
   font-size: 22px;
   line-height: 1;
 }
@@ -456,16 +456,16 @@
   display: inline-block;
   margin-left: 8px;
   padding: 1px 7px;
-  border: 1px solid rgba(224, 106, 139, .5);
+  border: 1px solid rgba(192, 82, 63, .5);
   border-radius: 999px;
-  color: #E06A8B;
+  color: #C0523F;
   font-size: 11px;
   font-weight: normal;
 }
 
 .sec-empty {
   padding: 28px 18px;
-  border: 1px dashed rgba(224, 106, 139, .35);
+  border: 1px dashed rgba(192, 82, 63, .35);
   border-radius: 10px;
   color: var(--font-color);
   opacity: .7;

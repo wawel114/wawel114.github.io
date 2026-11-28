@@ -4,14 +4,14 @@
  * 只在首页生效：scripts/home-wall.js 给首页 body 加 home-wall-page，
  * 这里所有样式都限定在 body.home-wall-page 下，文章页/归档/专题页
  * 没有这个 class，样式完全不命中，观感不受影响。
- * 内边缘用渐变溶解进主题暗玫瑰底（#5a2a38），配一道淡粉光缝。
+ * 内边缘用渐变溶解进主题暖褐红底（#3a2220），配一道朱红光缝。
  * 手机端（<=768px）整条隐藏。
  * ------------------------------------------------------------------
  */
 body.home-wall-page {
   --cb-wall-w: 158px;
-  --cb-page: #5a2a38;
-  --cb-pink: #e06a8b;
+  --cb-page: #3a2220;
+  --cb-pink: #c0523f;
 }
 
 body.home-wall-page .cb-wall {
@@ -50,7 +50,7 @@ body.home-wall-page .cb-wall::after {
   background: linear-gradient(180deg, rgba(0,0,0,.35), transparent 22%, transparent 75%, rgba(0,0,0,.45));
 }
 
-/* 内侧渐变：壁纸边缘溶解进主页暗玫瑰粉，末端淡粉光缝后回到正文色 */
+/* 内侧渐变：壁纸边缘溶解进主页暖褐红，末端朱红光缝后回到正文色 */
 body.home-wall-page .cb-wall::before {
   content: "";
   position: absolute;
@@ -60,13 +60,13 @@ body.home-wall-page .cb-wall::before {
 }
 body.home-wall-page .cb-wall.left::before {
   background:
-    linear-gradient(90deg, transparent 88%, rgba(224,106,139,.32) 94%, var(--cb-page) 100%),
-    linear-gradient(90deg, transparent 42%, rgba(90,42,56,.10) 58%, rgba(90,42,56,.45) 78%, var(--cb-page) 99%);
+    linear-gradient(90deg, transparent 46%, rgba(58,34,32,.18) 62%, rgba(192,82,63,.28) 82%, var(--cb-page) 100%),
+    linear-gradient(90deg, transparent 30%, rgba(58,34,32,.28) 55%, rgba(58,34,32,.62) 78%, var(--cb-page) 98%);
 }
 body.home-wall-page .cb-wall.right::before {
   background:
-    linear-gradient(270deg, transparent 88%, rgba(224,106,139,.32) 94%, var(--cb-page) 100%),
-    linear-gradient(270deg, transparent 42%, rgba(90,42,56,.10) 58%, rgba(90,42,56,.45) 78%, var(--cb-page) 99%);
+    linear-gradient(270deg, transparent 46%, rgba(58,34,32,.18) 62%, rgba(192,82,63,.28) 82%, var(--cb-page) 100%),
+    linear-gradient(270deg, transparent 30%, rgba(58,34,32,.28) 55%, rgba(58,34,32,.62) 78%, var(--cb-page) 98%);
 }
 
 body.home-wall-page .cb-wall .cb-mark {
@@ -84,7 +84,7 @@ body.home-wall-page .cb-wall .cb-mark {
 
 @media (min-width: 769px) {
   body.home-wall-page { padding-left: var(--cb-wall-w); padding-right: var(--cb-wall-w); }
-  body.home-wall-page #body-wrap { box-shadow: 0 0 60px rgba(0,0,0,.5), 0 0 22px rgba(224,106,139,.18); }
+  body.home-wall-page #body-wrap { box-shadow: 0 0 60px rgba(0,0,0,.5), 0 0 22px rgba(192,82,63,.18); }
 }
 @media (max-width: 768px) {
   body.home-wall-page .cb-wall { display: none !important; }
